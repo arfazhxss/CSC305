@@ -39,5 +39,5 @@ A K Peters/CRC Press<br>
 Textbook - 716 Pages<br>
 ISBN 9780367505035<br>
 
-[Rules](Assignments/Rules.md)
+[Rules](1 Assignments/Rules.md)
 
