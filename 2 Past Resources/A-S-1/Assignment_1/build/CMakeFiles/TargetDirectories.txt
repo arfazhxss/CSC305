@@ -1,0 +1,3 @@
+/Users/anasty/School/SUMMER2023/CSC305/Assignment_1/build/CMakeFiles/assignment1.dir
+/Users/anasty/School/SUMMER2023/CSC305/Assignment_1/build/CMakeFiles/edit_cache.dir
+/Users/anasty/School/SUMMER2023/CSC305/Assignment_1/build/CMakeFiles/rebuild_cache.dir
