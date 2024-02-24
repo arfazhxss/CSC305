@@ -1,7 +1,7 @@
 #!/bin/bash
 # git workflow v8.0
 # 2024 @arfazhxss
-# Test Version #28
+# Test Version #31
 
 breakStrSize=50
 breakStrIter=$(printf '_%.0s' $(seq 1 "$breakStrSize"))
@@ -25,7 +25,7 @@ function syncBranch() {
   echo -e "YES'ED\n${breakStrIter}"
   git stash
   git stash clear
-  git pull --quiet
+  git pull --rebase --autostash --quiet
   echo -e "${breakStrIter}\n\t\tYour Repository is synced\n\t\twith the latest commit :)\n${breakStrIter}"
 }
 
