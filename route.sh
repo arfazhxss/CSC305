@@ -24,8 +24,8 @@ function versionCheck() {
 function syncBranch() {
   echo -e "YES'ED\n${breakStrIter}"
   git stash
-  git stash clear
   git pull --rebase --autostash --quiet
+  git stash clear
   echo -e "${breakStrIter}\n\t\tYour Repository is synced\n\t\twith the latest commit :)\n${breakStrIter}"
 }
 
