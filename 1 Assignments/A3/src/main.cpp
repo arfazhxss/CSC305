@@ -191,55 +191,55 @@ Vector4d procedural_texture(const double tu, const double tv)
 // Intersection code
 ////////////////////////////////////////////////////////////////////////////////
 
-//Compute the intersection between a ray and a sphere, return -1 if no intersection
+// Compute the intersection between a ray and a sphere, return -1 if no intersection
 double ray_sphere_intersection(const Vector3d &ray_origin, const Vector3d &ray_direction, int index, Vector3d &p, Vector3d &N)
 {
     // TODO, implement the intersection between the ray and the sphere at index index.
-    //return t or -1 if no intersection
-
     const Vector3d sphere_center = sphere_centers[index];
     const double sphere_radius = sphere_radii[index];
 
-    double t = -1;
+    Vector3d offset = ray_origin - sphere_center;
 
-    if (false)
-    {
-        return -1;
-    }
-    else
-    {
-        //TODO set the correct intersection point, update p to the correct value
-        p = ray_origin;
-        N = ray_direction;
+    double qA = ray_direction.dot(ray_direction);
+    double qB = 2.0 * ray_direction.dot(offset);
+    double qC = (offset).dot(offset) - (sphere_radius * sphere_radius);
 
-        return t;
-    }
+    double discriminant = qB * qB - 4 * qA * qC; // Discriminant of the quadratic equation
+    
+    if (discriminant < 0.0) { return -1; }
 
-    return -1;
+    // TODO set the correct intersection point, update p to the correct value
+    double firstIntersectingPoint = (-qB - sqrt(discriminant)) / (2.0 * qA); // Ray parameter for the first intersection point
+    double secondIntersectingPoint = (-qB + sqrt(discriminant)) / (2.0 * qA); // Ray parameter for the second intersection point
+
+    // Select the closest intersection point in front of the ray origin
+    double t = ((firstIntersectingPoint > 0) && (secondIntersectingPoint < 0.0 || firstIntersectingPoint < secondIntersectingPoint)) ? firstIntersectingPoint : secondIntersectingPoint;
+    
+    if (t < 0.0) { return -1; }
+
+    // Compute the intersection point and normal
+    p = ray_origin + t * ray_direction;
+    N = (p - sphere_center).normalized();
+
+    return t;
 }
 
 //Compute the intersection between a ray and a paralleogram, return -1 if no intersection
 double ray_parallelogram_intersection(const Vector3d &ray_origin, const Vector3d &ray_direction, int index, Vector3d &p, Vector3d &N)
 {
-    // TODO, implement the intersection between the ray and the parallelogram at index index.
-    //return t or -1 if no intersection
-
     const Vector3d pgram_origin = parallelograms[index].col(0);
     const Vector3d A = parallelograms[index].col(1);
     const Vector3d B = parallelograms[index].col(2);
     const Vector3d pgram_u = A - pgram_origin;
     const Vector3d pgram_v = B - pgram_origin;
 
-    if (false)
-    {
-        return -1;
-    }
+    Matrix3d M;
+    M.col(0) = pgram_u;
+    M.col(1) = pgram_v;
+    M.col(2) = -ray_direction;
 
-    //TODO set the correct intersection point, update p and N to the correct values
-    p = ray_origin;
-    N = p.normalized();
-
-    return -1;
+    Vector3d b = ray_origin - pgram_origin;
+    Vector3d X = M.colPivHouseholderQr().solve(b);
 }
 
 //Finds the closest intersecting object returns its index

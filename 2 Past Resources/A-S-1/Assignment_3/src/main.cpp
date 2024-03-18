@@ -236,7 +236,6 @@ double ray_sphere_intersection(const Vector3d &ray_origin, const Vector3d &ray_d
     N = (p - sphere_center).normalized();
 
     return t;
-
 }
 
 //Compute the intersection between a ray and a paralleogram, return -1 if no intersection
