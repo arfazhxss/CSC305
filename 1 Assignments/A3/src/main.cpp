@@ -1,11 +1,10 @@
-////////////////////////////////////////////////////////////////////////////////
-// C++ include
+// C++ include(s)
 #include <iostream>
 #include <string>
 #include <vector>
 #include <limits>
 
-// Utilities for the Assignment
+// Utilities 
 #include "utils.h"
 
 // Image writing library
@@ -15,10 +14,7 @@
 // Shortcut to avoid Eigen:: everywhere, DO NOT USE IN .h
 using namespace Eigen;
 
-////////////////////////////////////////////////////////////////////////////////
 // Scene setup, global variables
-////////////////////////////////////////////////////////////////////////////////
-
 const float epsilon = 0.0001;
 const std::string filename("raytrace.png");
 
@@ -38,7 +34,7 @@ std::vector<Vector3d> sphere_centers;
 std::vector<double> sphere_radii;
 std::vector<Matrix3d> parallelograms;
 
-//Material for the object, same material for all objects
+// Material for the object, same material for all objects
 const Vector4d obj_ambient_color(0.5, 0.1, 0.1, 0);
 const Vector4d obj_diffuse_color(0.5, 0.5, 0.5, 0);
 const Vector4d obj_specular_color(0.2, 0.2, 0.2, 0);
@@ -46,17 +42,17 @@ const double obj_specular_exponent = 256.0;
 const Vector4d obj_reflection_color(0.7, 0.7, 0.7, 0);
 const Vector4d obj_refraction_color(0.7, 0.7, 0.7, 0);
 
-// Precomputed (or otherwise) gradient vectors at each grid node
+// PreComputingd (or otherwise) gradient vectors at each grid node
 const int grid_size = 20;
 std::vector<std::vector<Vector2d>> grid;
 
-//Lights
+// Lights
 std::vector<Vector3d> light_positions;
 std::vector<Vector4d> light_colors;
-//Ambient light
+// Ambient light
 const Vector4d ambient_light(0.2, 0.2, 0.2, 0);
 
-//Fills the different arrays
+// Fills the different arrays
 void setup_scene()
 {
     grid.resize(grid_size + 1);
@@ -67,7 +63,7 @@ void setup_scene()
             grid[i][j] = Vector2d::Random().normalized();
     }
 
-    //Spheres
+    // Spheres
     sphere_centers.emplace_back(10, 0, 1);
     sphere_radii.emplace_back(1);
 
@@ -89,13 +85,13 @@ void setup_scene()
     sphere_centers.emplace_back(-8, 1.6, 1);
     sphere_radii.emplace_back(1);
 
-    //parallelograms
+    // parallelograms
     parallelograms.emplace_back();
     parallelograms.back() << -100, 100, -100,
         -1.25, 0, -1.2,
         -100, -100, 100;
 
-    //Lights
+    // Lights
     light_positions.emplace_back(8, 8, 0);
     light_colors.emplace_back(16, 16, 16, 0);
 
@@ -118,12 +114,14 @@ void setup_scene()
     light_colors.emplace_back(16, 16, 16, 0);
 }
 
-//We need to make this function visible
+// We need to make this function visible
 Vector4d shoot_ray(const Vector3d &ray_origin, const Vector3d &ray_direction, int max_bounce);
 
-////////////////////////////////////////////////////////////////////////////////
-// Perlin noise code
-////////////////////////////////////////////////////////////////////////////////
+   /*
+    *      / - / - / - / - / - / - /
+    *     / PERLIN NOISE CODE / - /
+    *    / - / - / - / - / - / - /
+    */
 
 // Function to linearly interpolate between a0 and a1
 // Weight w should be in the range [0.0, 1.0]
@@ -135,18 +133,18 @@ double lerp(double a0, double a1, double w)
     return (a1 - a0) * (3.0 - w * 2.0) * w * w + a0;
 }
 
-// Computes the dot product of the distance and gradient vectors.
+// Computings the dot product of the distance and gradient vectors.
 double dotGridGradient(int ix, int iy, double x, double y)
 {
-    // Compute the distance vector
+    // Computing the distance vector
     float dx = x - ix;
     float dy = y - iy;
 
-    // Compute and return the dot-product
+    // Computing and return the dot-product
     return (dx * grid[ix][iy][0] + dy * grid[ix][iy][1]);
 }
 
-// Compute Perlin noise at coordinates x, y
+// Computing Perlin noise at coordinates x, y
 double perlin(double x, double y)
 {
     // Determine grid cell coordinates x0, y0
@@ -189,11 +187,13 @@ Vector4d procedural_texture(const double tu, const double tv)
     // return Vector4d(0, color, 0, 0);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Intersection code
-////////////////////////////////////////////////////////////////////////////////
+   /* 
+    *     / - / - / - / - / - / - /
+    *    / INTERSECTION CODE / - / 
+    *   / - / - / - / - / - / - /  
+    */
 
-// Compute the intersection between a ray and a sphere, return -1 if no intersection
+// Computing the intersection between a ray and a sphere, return -1 if no intersection
 double ray_sphere_intersection(const Vector3d &ray_origin, const Vector3d &ray_direction, int index, Vector3d &p, Vector3d &N)
 {
     // Implement the intersection between the ray and the sphere at index index.
@@ -210,11 +210,11 @@ double ray_sphere_intersection(const Vector3d &ray_origin, const Vector3d &ray_d
     
     if (discriminant < 0.0) { return -1; }
 
-    // TODO set the correct intersection point, update p to the correct value
+    // Setting the correct intersection point, update p to the correct value
     double firstIntersectingPoint = (-qB - sqrt(discriminant)) / (2.0 * qA); // Ray parameter for the first intersection point
     double secondIntersectingPoint = (-qB + sqrt(discriminant)) / (2.0 * qA); // Ray parameter for the second intersection point
 
-    // Select the closest intersection point in front of the ray origin
+    // Selecting the closest intersection point in front of the ray origin
     double t =  ((firstIntersectingPoint > 0) && (secondIntersectingPoint < 0.0 
                 ||  firstIntersectingPoint  < secondIntersectingPoint)) 
                 ?   firstIntersectingPoint 
@@ -222,14 +222,14 @@ double ray_sphere_intersection(const Vector3d &ray_origin, const Vector3d &ray_d
     
     if (t < 0.0) { return -1; }
 
-    // Compute the intersection point and normal
+    // Computing the intersection point and normal
     p = ray_origin + t * ray_direction;
     N = (p - sphere_center).normalized();
 
     return t;
 }
 
-// Compute the intersection between a ray and a paralleogram, return -1 if no intersection
+// Computing the intersection between a ray and a paralleogram, return -1 if no intersection
 double ray_parallelogram_intersection(const Vector3d &ray_origin, const Vector3d &ray_direction, int index, Vector3d &p, Vector3d &N)
 {
     // Implement the intersection between the ray and the parallelogram at index index
@@ -269,12 +269,12 @@ int find_nearest_object(const Vector3d &ray_origin, const Vector3d &ray_directio
     Vector3d tmp_p, tmp_N;
     for (int i = 0; i < sphere_centers.size(); ++i)
     {
-        //returns t and writes on tmp_p and tmp_N
+        // returns t and writes on tmp_p and tmp_N
         const double t = ray_sphere_intersection(ray_origin, ray_direction, i, tmp_p, tmp_N);
-        //We have intersection
+        // We have intersection
         if (t >= 0)
         {
-            //The point is before our current closest t
+            // The point is before our current closest t
             if (t < closest_t)
             {
                 closest_index = i;
@@ -287,9 +287,9 @@ int find_nearest_object(const Vector3d &ray_origin, const Vector3d &ray_directio
 
     for (int i = 0; i < parallelograms.size(); ++i)
     {
-        //returns t and writes on tmp_p and tmp_N
+        // returns t and writes on tmp_p and tmp_N
         const double t = ray_parallelogram_intersection(ray_origin, ray_direction, i, tmp_p, tmp_N);
-        //We have intersection
+        
         if (t >= 0)
         {
             //The point is before our current closest t
@@ -306,9 +306,12 @@ int find_nearest_object(const Vector3d &ray_origin, const Vector3d &ray_directio
     return closest_index;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Raytracer code
-////////////////////////////////////////////////////////////////////////////////
+   /*
+    *        / - / - / - / - / - /
+    *       / Raytracer code    /
+    *      / - / - / - / - / - /
+    */
+
 
 // Checks if the light is visible
 bool is_light_visible(const Vector3d &ray_origin, const Vector3d &ray_direction, const Vector3d &light_position)
@@ -348,7 +351,7 @@ Vector4d shoot_ray(const Vector3d &ray_origin, const Vector3d &ray_direction, in
 
         if (nearest_object == 4)
         {
-            // Compute UV coodinates for the point on the sphere
+            // Computing UV coodinates for the point on the sphere
             const double x = p(0) - sphere_centers[nearest_object][0];
             const double y = p(1) - sphere_centers[nearest_object][1];
             const double z = p(2) - sphere_centers[nearest_object][2];
@@ -384,7 +387,7 @@ Vector4d shoot_ray(const Vector3d &ray_origin, const Vector3d &ray_direction, in
     {
         refl_color = Vector4d(0.5, 0.5, 0.5, 0);
     }
-    // Compute the color of the reflected ray and add its contribution to the current point color.
+    // Computing the color of the reflected ray and add its contribution to the current point color.
     // use refl_color
     Vector3d d = ray_direction.normalized();
     Vector3d r = (d - (2 * (d.dot(N)) * N)).normalized();
@@ -392,7 +395,7 @@ Vector4d shoot_ray(const Vector3d &ray_origin, const Vector3d &ray_direction, in
     Vector4d reflection_color(0, 0, 0, 0);
     reflection_color = reflection_color + refl_color.cwiseProduct(shoot_ray(p + (epsilon * r), r, max_bounce - 1));
 
-    // Compute the color of the refracted ray and add its contribution to the current point color.
+    // Computing the color of the refracted ray and add its contribution to the current point color.
     // Checking for total internal reflection before shooting a new ray.
     Vector4d refraction_color(0, 0, 0, 0);
 
@@ -405,7 +408,11 @@ Vector4d shoot_ray(const Vector3d &ray_origin, const Vector3d &ray_direction, in
     return C;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+   /*
+    *        / - / - / - / - / - /
+    *       / - / - / - / - / - /
+    *      / - / - / - / - / - /
+    */
 
 void raytrace_scene()
 {
@@ -423,10 +430,10 @@ void raytrace_scene()
     // and covers an viewing angle given by 'field_of_view'.
     double aspect_ratio = double(w) / double(h);
     
-    // Compute the correct pixels size
+    // Computing the correct pixels size
     double image_y = tan(field_of_view / 2) * focal_length;
 
-    // Compute the correct pixels size
+    // Computing the correct pixels size
     double image_x = image_y * aspect_ratio;
 
     // The pixel grid through which we shoot rays is at a distance 'focal_length'
@@ -482,7 +489,11 @@ void raytrace_scene()
     write_matrix_to_png(R, G, B, A, filename);
 }
 
-////////////////////////////////////////////////////////////////////////////////
+   /*
+    *        / - / - / - / - / - /
+    *       / - / - / - / - / - /
+    *      / - / - / - / - / - /
+    */
 
 int main(int argc, char *argv[])
 {
