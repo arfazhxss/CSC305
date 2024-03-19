@@ -242,7 +242,7 @@ double ray_sphere_intersection(const Vector3d &ray_origin, const Vector3d &ray_d
 double ray_parallelogram_intersection(const Vector3d &ray_origin, const Vector3d &ray_direction, int index, Vector3d &p, Vector3d &N)
 {
     // TODO, implement the intersection between the ray and the parallelogram at index index.
-    //return t or -1 if no intersection
+    // return t or -1 if no intersection
 
     const Vector3d pgram_origin = parallelograms[index].col(0);
     const Vector3d A = parallelograms[index].col(1);
