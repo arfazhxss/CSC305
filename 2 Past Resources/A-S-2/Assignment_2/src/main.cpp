@@ -1,7 +1,3 @@
-//Connor Newbery
-//V00921506
-
-// C++ include
 #include <iostream>
 #include <string>
 #include <vector>
