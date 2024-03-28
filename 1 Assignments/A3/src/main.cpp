@@ -4,7 +4,7 @@
 #include <vector>
 #include <limits>
 
-// Utilities 
+// Utilities
 #include "utils.h"
 
 // Image writing library
@@ -20,9 +20,9 @@ const std::string filename("raytrace.png");
 
 // Camera settings
 const double focal_length = 10;
-const double field_of_view = 0.7854; //45 degrees
+const double field_of_view = 0.7854; // 45 degrees
 const double image_z = 5;
-const bool is_perspective = false;
+const bool is_perspective = true; // addT
 const Vector3d camera_position(0, 0, 5);
 const double camera_aperture = 0.05;
 
@@ -117,11 +117,11 @@ void setup_scene()
 // We need to make this function visible
 Vector4d shoot_ray(const Vector3d &ray_origin, const Vector3d &ray_direction, int max_bounce);
 
-   /*
-    *      / - / - / - / - / - / - /
-    *     / PERLIN NOISE CODE / - /
-    *    / - / - / - / - / - / - /
-    */
+/*
+ *      / - / - / - / - / - / - /
+ *     / PERLIN NOISE CODE / - /
+ *    / - / - / - / - / - / - /
+ */
 
 // Function to linearly interpolate between a0 and a1
 // Weight w should be in the range [0.0, 1.0]
@@ -187,11 +187,11 @@ Vector4d procedural_texture(const double tu, const double tv)
     // return Vector4d(0, color, 0, 0);
 }
 
-   /* 
-    *     / - / - / - / - / - / - /
-    *    / INTERSECTION CODE / - / 
-    *   / - / - / - / - / - / - /  
-    */
+/*
+ *     / - / - / - / - / - / - /
+ *    / INTERSECTION CODE / - /
+ *   / - / - / - / - / - / - /
+ */
 
 // Computing the intersection between a ray and a sphere, return -1 if no intersection
 double ray_sphere_intersection(const Vector3d &ray_origin, const Vector3d &ray_direction, int index, Vector3d &p, Vector3d &N)
@@ -207,20 +207,25 @@ double ray_sphere_intersection(const Vector3d &ray_origin, const Vector3d &ray_d
     double qC = (offset).dot(offset) - (sphere_radius * sphere_radius);
 
     double discriminant = qB * qB - 4 * qA * qC; // Discriminant of the quadratic equation
-    
-    if (discriminant < 0.0) { return -1; }
+
+    if (discriminant < 0.0)
+    {
+        return -1;
+    }
 
     // Setting the correct intersection point, update p to the correct value
-    double firstIntersectingPoint = (-qB - sqrt(discriminant)) / (2.0 * qA); // Ray parameter for the first intersection point
+    double firstIntersectingPoint = (-qB - sqrt(discriminant)) / (2.0 * qA);  // Ray parameter for the first intersection point
     double secondIntersectingPoint = (-qB + sqrt(discriminant)) / (2.0 * qA); // Ray parameter for the second intersection point
 
     // Selecting the closest intersection point in front of the ray origin
-    double t =  ((firstIntersectingPoint > 0) && (secondIntersectingPoint < 0.0 
-                ||  firstIntersectingPoint  < secondIntersectingPoint)) 
-                ?   firstIntersectingPoint 
-                :   secondIntersectingPoint;
-    
-    if (t < 0.0) { return -1; }
+    double t = ((firstIntersectingPoint > 0) && (secondIntersectingPoint < 0.0 || firstIntersectingPoint < secondIntersectingPoint))
+                   ? firstIntersectingPoint
+                   : secondIntersectingPoint;
+
+    if (t < 0.0)
+    {
+        return -1;
+    }
 
     // Computing the intersection point and normal
     p = ray_origin + t * ray_direction;
@@ -249,12 +254,10 @@ double ray_parallelogram_intersection(const Vector3d &ray_origin, const Vector3d
     float v = X(1);
     float t = X(2);
 
-    return  (t > 0 && u >= 0 && v >= 0 && u <= 1 && v <= 1) ? 
-            (
-                p = ray_origin + t * ray_direction, 
-                N = pgram_v.cross(pgram_u).normalized(), t
-            ) 
-            : -1;
+    return (t > 0 && u >= 0 && v >= 0 && u <= 1 && v <= 1) ? (
+                                                                 p = ray_origin + t * ray_direction,
+                                                                 N = pgram_v.cross(pgram_u).normalized(), t)
+                                                           : -1;
 }
 
 // Finds the closest intersecting object returns its index
@@ -264,7 +267,7 @@ int find_nearest_object(const Vector3d &ray_origin, const Vector3d &ray_directio
     // Find the object in the scene that intersects the ray first
     // we store the index and the 'closest_t' to their expected values
     int closest_index = -1;
-    double closest_t = std::numeric_limits<double>::max(); //closest t is "+ infinity"
+    double closest_t = std::numeric_limits<double>::max(); // closest t is "+ infinity"
 
     Vector3d tmp_p, tmp_N;
     for (int i = 0; i < sphere_centers.size(); ++i)
@@ -289,10 +292,10 @@ int find_nearest_object(const Vector3d &ray_origin, const Vector3d &ray_directio
     {
         // returns t and writes on tmp_p and tmp_N
         const double t = ray_parallelogram_intersection(ray_origin, ray_direction, i, tmp_p, tmp_N);
-        
+
         if (t >= 0)
         {
-            //The point is before our current closest t
+            // The point is before our current closest t
             if (t < closest_t)
             {
                 closest_index = sphere_centers.size() + i;
@@ -306,12 +309,11 @@ int find_nearest_object(const Vector3d &ray_origin, const Vector3d &ray_directio
     return closest_index;
 }
 
-   /*
-    *        / - / - / - / - / - /
-    *       / Raytracer code    /
-    *      / - / - / - / - / - /
-    */
-
+/*
+ *        / - / - / - / - / - /
+ *       / Raytracer code    /
+ *      / - / - / - / - / - /
+ */
 
 // Checks if the light is visible
 bool is_light_visible(const Vector3d &ray_origin, const Vector3d &ray_direction, const Vector3d &light_position)
@@ -323,20 +325,28 @@ bool is_light_visible(const Vector3d &ray_origin, const Vector3d &ray_direction,
 
 Vector4d shoot_ray(const Vector3d &ray_origin, const Vector3d &ray_direction, int max_bounce)
 {
-    //Intersection point and normal, these are output of find_nearest_object
+    // Intersection point and normal, these are output of find_nearest_object
     Vector3d p, N;
 
     const int nearest_object = find_nearest_object(ray_origin, ray_direction, p, N);
 
     // Return a transparent color
-    if (nearest_object < 0) { return Vector4d(0, 0, 0, 0); }
+    if (nearest_object < 0)
+    {
+        return Vector4d(0, 0, 0, 0);
+    }
+
+    if (max_bounce < 0)
+    {
+        return Vector4d(0, 0, 0, 0);
+    } // addT
 
     // Ambient light contribution
     const Vector4d ambient_color = obj_ambient_color.array() * ambient_light.array();
 
     // Punctual lights contribution (direct lighting)
     Vector4d lights_color(0, 0, 0, 0);
-    
+
     for (int i = 0; i < light_positions.size(); ++i)
     {
         const Vector3d &light_position = light_positions[i];
@@ -345,7 +355,9 @@ Vector4d shoot_ray(const Vector3d &ray_origin, const Vector3d &ray_direction, in
         const Vector3d Li = (light_position - p).normalized();
 
         if (!is_light_visible(p + (Li * epsilon), Li, light_position))
-        { continue; }
+        {
+            continue;
+        }
 
         Vector4d diff_color = obj_diffuse_color;
 
@@ -408,11 +420,11 @@ Vector4d shoot_ray(const Vector3d &ray_origin, const Vector3d &ray_direction, in
     return C;
 }
 
-   /*
-    *        / - / - / - / - / - /
-    *       / - / - / - / - / - /
-    *      / - / - / - / - / - /
-    */
+/*
+ *        / - / - / - / - / - /
+ *       / - / - / - / - / - /
+ *      / - / - / - / - / - /
+ */
 
 void raytrace_scene()
 {
@@ -429,7 +441,7 @@ void raytrace_scene()
     // The sensor grid is at a distance 'focal_length' from the camera center,
     // and covers an viewing angle given by 'field_of_view'.
     double aspect_ratio = double(w) / double(h);
-    
+
     // Computing the correct pixels size
     double image_y = tan(field_of_view / 2) * focal_length;
 
@@ -467,6 +479,8 @@ void raytrace_scene()
                     // add random vector to camera position
                     ray_origin = camera_position + random_vector;
                     ray_direction = (pixel_center - camera_position).normalized();
+                    Vector3d focal_point = camera_position + focal_length * ray_direction; // addT
+                    ray_direction = (focal_point - ray_origin).normalized();               // addT
                 }
                 else
                 {
@@ -489,11 +503,11 @@ void raytrace_scene()
     write_matrix_to_png(R, G, B, A, filename);
 }
 
-   /*
-    *        / - / - / - / - / - /
-    *       / - / - / - / - / - /
-    *      / - / - / - / - / - /
-    */
+/*
+ *        / - / - / - / - / - /
+ *       / - / - / - / - / - /
+ *      / - / - / - / - / - /
+ */
 
 int main(int argc, char *argv[])
 {
