@@ -1,3 +1,0 @@
-/Users/connornewbery/uvic/summer-2023/csc305/Assignment_4/build/CMakeFiles/assignment4.dir
-/Users/connornewbery/uvic/summer-2023/csc305/Assignment_4/build/CMakeFiles/edit_cache.dir
-/Users/connornewbery/uvic/summer-2023/csc305/Assignment_4/build/CMakeFiles/rebuild_cache.dir
