@@ -1,4 +1,4 @@
-# Install script for directory: /Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2
+# Install script for directory: /Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

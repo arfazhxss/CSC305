@@ -1,0 +1,441 @@
+                        Procedural Synthesis
+  Acknowledgment: Sylvain Lefebvre, Jeremie Dumas
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+        Procedural Content Generation
+                            Inigo Quilez (https://www.shadertoy.com/view/4ttSWf)
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                      Procedural Noise
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+            We start with noise functions
+       • Goal: create realistic “textures” at inexpensive costs.
+                                         F(noise)
+                                          colors, 
+                                          normals, 
+                                        roughness…
+                  Procedural noise                       Procedural texture 
+                                                            [Perlin 1985]
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+        What is a good noise function?
+                                                   Perlin noise [85]
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                     Noise Requirements
+       • We want noise with controllable appearance 
+       • Other desirable noise properties: 
+         • Compact 
+         • Continuous 
+         • Non-periodic 
+         • Fast 
+       • Applied to 3D objects: map to surface or 3D function
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                   Perlin Noise
+        • Based on a regular lattice, with a 2D random 
+          vector v defined on every corner 
+        • Algorithm: 
+          • Given a point p in 2D find the 4 lattice 
+            corners c , c , c , c  
+                      1   2  3   4
+          •                 .  
+            Compute v(c)  (p-c) for every corner 
+                          i       i
+          • Return the bilinear interpolation of the dot 
+            products evaluated at p
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+      // Function to linearly interpolate between a0 and a1 
+      // Weight w should be in the range [0.0, 1.0] 
+      float lerp(float a0, float a1, float w) { 
+          return (1.0 - w)*a0 + w*a1; 
+          // as an alternative, this slightly faster equivalent formula can be used: 
+          // return a0 + w*(a1 - a0); 
+      } 
+      // Computes the dot product of the distance and gradient vectors. 
+      float dotGridGradient(int ix, int iy, float x, float y) { 
+          // Precomputed (or otherwise) gradient vectors at each grid node 
+          extern float Gradient[IYMAX][IXMAX][2]; 
+          // Compute the distance vector 
+          float dx = x - (float)ix; 
+          float dy = y - (float)iy; 
+          // Compute the dot-product 
+          return (dx*Gradient[iy][ix][0] + dy*Gradient[iy][ix][1]); 
+      }
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+      // Compute Perlin noise at coordinates x, y 
+      float perlin(float x, float y) { 
+          // Determine grid cell coordinates 
+          int x0 = int(x); 
+          int x1 = x0 + 1; 
+          int y0 = int(y); 
+          int y1 = y0 + 1; 
+          // Determine interpolation weights 
+          // Could also use higher order polynomial/s-curve here 
+          float sx = x - (float)x0; 
+          float sy = y - (float)y0; 
+          // Interpolate between grid point gradients 
+          float n0, n1, ix0, ix1, value; 
+          n0 = dotGridGradient(x0, y0, x, y); 
+          n1 = dotGridGradient(x1, y0, x, y); 
+          ix0 = lerp(n0, n1, sx); 
+          n0 = dotGridGradient(x0, y1, x, y); 
+          n1 = dotGridGradient(x1, y1, x, y); 
+          ix1 = lerp(n0, n1, sx); 
+          value = lerp(ix0, ix1, sy); 
+          return value; 
+      }
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+  Combine                          x 1              and add colors!
+                                 x 0.5
+               42                        +=
+              seed
+                                x 0.25
+                                                                 color = f(x,y,z)
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                           Color Maps
+  From: https://matplotlib.org/tutorials/colors/colormaps.html
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+       Why are Procedural Textures Popular?
+       • No need to store them 
+         • Reduce GPU transfer for rasterization 
+         • Reduce scene size for raytracing 
+       • They can be evaluated at any point 
+         • computation-bound instead of memory-bound 
+       • Infinite resolution (similar to vector graphics)
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+        Solid Textures and Hypertextures
+           Cellular Noise [Worley 1996]                  Hypertextures [Perlin 1989]
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                     Implicit Modeling
+ Acknowledgement: Marco Tarini
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+  distance field                                            iso-surface
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+  distance field                                            iso-surface
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                           composition operator
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                s
+                                a
+                                m
+                                p
+                                 l
+                                e
+                                _
+                                o
+                                u
+                                 t
+                                                        composition operator
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                           composition operator
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                             union                   blend                contact & bulge 
+                         [Sabin 1968]             [Blinn 1982]               [Cani 1993]
+                                                  [Ricci 1973]
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                           [Gourmel et al. 2013]
+                                           composition operator
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                           [Gourmel et al. 2013]
+                                           composition operator
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                  Implicit Skinning [Vaillant et al. 2013]
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            [Vaillant et al. 2014]
+                                           composition operator
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            [Vaillant et al. 2014]
+                                           composition operator
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Implicit Model
+      • All points where f(p) =0 
+                             f : R3 → R
+      • It directly defines an inside and outside 
+        • f (p) < 0   <==>  p  inside 
+        • f (p) > 0   <==>  p  outside 
+        • f (p) = 0   <==>  p  on the surface 
+      • By construction, it defines a closed, watertight model. 
+       
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                       Sphere
+                    ⎛ x⎞
+                  f ⎜ y⎟ = x2 + y2 + z2 − R2
+                    ⎜   ⎟
+                    ⎜ z ⎟                                          z
+                    ⎝   ⎠
+                                                      x                    y
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                     Categories
+        • Algebraic surfaces:  f () is a polynomial 
+        • Quadratic surfaces :  f () degree is 2,  
+          • aka «quadrics» 
+          • important class!  
+             • simple equations, good expressive power 
+             • e.g. perfect spheres 
+        • Cubic surfaces:  f () degree is 3 
+        • Higher-Order
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+        Implicit Modeling: Pros and Cons?
+        Pros: 
+          • Compact 
+          • CSG! (see later) 
+          • Good model for both fluids and solids 
+          • Easy to render with ray marching 
+        Cons: 
+          • Difficult to render for rasterization-based pipelines
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                  Implicit Solid Modeling
+       • Let A and B be two solid objects described implicitly by implicit 
+         functions f  and f
+                    A      B 
+       • We can then define: 
+         • complement: - f  
+                              A                            A
+         • intersection:  max( f  , f  ) 
+                                  A   B
+         • union: min( f  , f  )                  B
+                          A   B
+         • subtraction: max( f  , - f  )
+                                 A    B
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+      Constructive Solid Geometry (CSG)
+                                     /
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+              Geometric Solid Modelling
+                                         max
+                                                 -
+                             max                      min
+                       f1          f2           f3           min
+                                                        f4         f5
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                       Constructive Solid Geometry 
+                                    CSG
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+            Modeling Complex Scenes
+                    http://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                    4096 bytes
+  https://www.youtube.com/watch?list=PLVbS70ERPhCCGKc-MdKsH03R7o6TNbGoZ&time_continue=12&v=roZ-Cgxe9bU
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                    Rendering Implicits 
+                          Ray Marching
+ Acknowledgement: Jamie Wong 
+ http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                              Ray Marching
+                                          • Similar to ray tracing 
+                                          • Since the implicit function might not 
+                                             be quadratic, we cannot find the 
+                                             intersection explicitly as we did for 
+                                             triangles and spheres
+  Image from Wikipedia
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                               Algorithm 1
+       • The simplest algorithm resembles 
+         gradient descent 
+         • You proceed on the ray by a fixed 
+           amount 
+         • You start to do bisection search if you 
+           get closer than a given distance to 
+           the surface
+   Image From: https://computergraphics.stackexchange.com/questions/161/what-is-ray-marching-is-sphere-tracing-the-same-thing
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+           Algorithm 2: “Sphere Tracing”
+       • Instead of taking a constant 
+          step, you check the closest 
+          point on the surface, and you 
+          move by that amount 
+       • Can be done exactly with a 
+          distance field 
+       • It can be a conservative 
+          estimate for more general 
+          cases
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                 Tutorials and Examples
+      • shadertoy.com 
+      • http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-
+        functions/#the-raymarching-algorithm 
+      • https://computergraphics.stackexchange.com/questions/161/what-
+        is-ray-marching-is-sphere-tracing-the-same-thing
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                    Rendering Implicits 
+                       Explicit Meshing
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                                  Extracting the Surface
+            • Wish to compute a manifold mesh of the level set
+                                                           F(x) = 0    
+                                                           surface
+                                                            F(x) < 0    
+                                                            inside
+                                                                                                            .com
+                                                            F(x) > 0    
+                                                            outside                                        om: 
+                                                                                                            .farfieldtechnology
+                                                                                                           Image frwww
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Sample the SDF
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Sample the SDF
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                      Tessellation
+       •  Want to approximate an implicit surface with a mesh 
+       •  Can‘t explicitly compute all the roots 
+          • Sampling the level set is difficult (root finding) 
+       •  Solution: find approximate roots by trapping the implicit surface in a grid 
+          (lattice)
+                      +      -
+                      -      -
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                Marching Squares
+       •  16 different configurations in 2D 
+       •  4 equivalence classes (up to rotational and reflection symmetry + 
+          complement)
+                                        …        …
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                Tessellation in 2D
+       •  4 equivalence classes (up to rotational and reflection symmetry + 
+          complement)
+                                                                ?
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                               Tessellation in 2D
+       • Case 4 is ambiguous: 
+       • Always pick consistently to avoid problems with the resulting mesh
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                   3D: Marching Cubes
+                                      Layer k+1
+                                      Layer k
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                                Marching Cubes
+          •     Marching Cubes (Lorensen and Cline 1987)  
+              1.  Load 4 layers of the grid  
+                  into memory 
+              2.  Create a cube whose  
+                  vertices lie on the two                                   Layer k+1
+                  middle layers 
+                                                                            Layer k
+              3.  Classify the vertices of  
+                  the cube according to the 
+                  implicit function (inside,  
+                  outside or on the surface)
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                                           Marching Cubes
+            4.     Compute case index. We have 28= 256 cases (0/1 for each of the eight 
+                   vertices) – can store as 8 bit (1 byte) index.
+                                                    v                  v
+                                                     8      e           7
+                                                             7
+                                                 e                e                                          e
+                                                  8                6                                           6
+                                             v         e      v                                          v
+                                              5         5      6                                  e5      6
+                                                                    e
+                                                    e                12
+                                                     11
+                                             e                   e10                    e                   e
+                                              9    v                                     9                    10
+                                                    4       e           v
+                                                             3           3
+                                                    e               e
+                                                     4               2                       e
+                                            v                                           v      4
+                                             1          e        v                       1
+                                                         1        2                                e1
+                                            index  = v v v v v v v v                    index  = 0 0 1 0 0 0 0 1 = 33
+                                                     1 2  3 4  5 6  7 8
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                Marching Cubes
+       • Unique cases (by rotation, reflection and complement)
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                                                  Tessellation 
+                                                                  3D – Marching Cubes
+            5.     Using the case index, retrieve the connectivity in the look-up table 
+            •    Example: the entry for index 33 in the look-up table indicates that  the cut 
+                 edges are e ; e ; e ; e ; e  and e  ; the output triangles are (e ; e ; e ) and 
+                                       1     4     5    6     9            10                                                    1     9     4
+                 (e ; e ; e ).
+                    5     10      6
+                                                                                           e6
+                                                                               e      v
+                                                                                5      6
+                                                                     e                    e
+                                                                      9                    10
+                                                                           e4                   index  = 0 0 1 0 0 0 0 1 = 33
+                                                                     v
+                                                                      1         e
+                                                                                 1
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                                 Marching Cubes
+          6.   Compute the position of the cut vertices by linear interpolation: 
+          7.   Move to the next cube
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                        Marching Cubes – Problems 
+       • Have to make consistent choices for neighboring cubes – 
+          otherwise get holes
+                                  –
+                 3                3
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                       Marching Cubes – Problems 
+       • Resolving ambiguities
+                           Ambiguity                      No Ambiguity
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                        Marching Cubes – Problems
+       • Grid not adaptive 
+       • Many polygons required to represent small features
+              Images from: “Dual Marching Cubes: Primal Contouring of Dual Grids” 
+              by Schaeffer et al.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                   Marching Cubes – Problems
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                     Implicit Modeling 
+             In Additive Manufacturing
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                  IceSL
+                              http://shapeforge.loria.fr/icesl/
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                Tilings
+                                  [Henry Segerman]
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                           By-Example 
+                      Texture Synthesis
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+        Texture synthesis from example
+          Tiling         Synthesis             Tiling         Synthesis
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                      Basic Idea
+              Example Image
+                                    Random Initial Guess                  Final Result
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                     Measuring Similarity
+      • Neighborhood Matching:
+                 Exemplar
+                                             Texture being synthesized
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+              What is a good exemplar?
+               ✔ Stochastic Image                 ✘ Structured Image
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                Results
+                       http://research.microsoft.com/projects/ParaTexSyn/
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                Surface Texture Synthesis
+                       Exemplar
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                By-Example Solid Textures
+     Solid Texture Synthesis [Kopf07]             Lazy Solid Texture Synthesis [Dong08]
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+             By-Example Solid Textures
+                                                            Lazy Solid Texture Synthesis 
+                                                               [Dong et al. 2008]
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            References
+      Fundamentals of Computer Graphics, Fourth Edition  
+      4th Edition by Steve Marschner, Peter Shirley 
+      Chapter 22 
+      https://www.shadertoy.com/view/4dS3Wd 
+      https://thebookofshaders.com/ 
+      http://www.iquilezles.org/ 
+      State of the Art in Example-based Texture Synthesis 
+      Li-Yi Wei, Sylvain Lefebvre, Vivek Kwatra, Greg Turk 
+      Eurographics 2009 - State of the Art Reports 2009 
+      State of the Art in Procedural Noise Functions 
+      Ares Lagae, Sylvain Lefebvre, Rob Cook, Tony DeRose, George Drettakis, D.S. Ebert, J.P. Lewis, Ken Perlin, Matthias Zwicker 
+      Eurographics 2010 - State of the Art Reports 2010
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider

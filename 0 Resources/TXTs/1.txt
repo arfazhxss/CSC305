@@ -1,0 +1,139 @@
+                        Introduction to  
+                   Computer Graphics
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+            What is Computer Graphics?
+       • In a broad sense is the use of a computer to create and manipulate 
+         images 
+         • It involves a combination of hardware (input, processing, output) 
+           and software 
+         • It can be 2D or 3D 
+         • It is used in most electronic devices
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Graphic Areas
+                                Modeling
+                 https://www.youtube.com/watch?v=Udno6EA5lXY
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Graphic Areas
+                                Rendering
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Graphic Areas
+                                Animation
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Graphic Areas
+                                Copyright: Andrew Guyton
+                            User Interaction
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Graphic Areas
+                                Copyright: Maurizio Pesce
+                             Virtual Reality
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Graphic Areas
+                              Visualization
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                               Graphic Areas
+                          By IkamusumeFan - Own work, CC BY-SA 4.0, https://commons.wikimedia.org/w/index.php?curid=41790217
+                                 Image Processing
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                               Graphic Areas
+                        By Creative Tools from Halmdstad, Sweden - CreativeTools.se - VIUscan - Laser-scanned - ZPrinter - 3D printed -  
+                           Viking Belt Buckle 24, CC BY 2.0, https://commons.wikimedia.org/w/index.php?curid=12419129
+                                        http://www.agisoft.com
+                             Geometry Acquisition
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                 Applications
+                  Video Games                       Cartoons/Visual Effects/Films
+                     Copyright: Nintendo                         Copyright: Blender Foundation
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                 Applications
+                   CAD/CAM                                     Simulation
+                                                   By Andreas Babucke - self made with EAS3, original upload at http://de.wikipedia.org/wiki/
+                                                  Bild:Lambda2_scherschicht.png, CC BY 3.0 de, https://commons.wikimedia.org/w/index.php?
+                                                                    curid=2999003
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                                                            Applications
+                                    Medical Imaging                                                                            Information Visualization
+                                   By Etan J. Tal - Own work, CC BY 3.0, https://                                                       By Mcstol - Own work, CC BY-SA 3.0, https://
+                                      commons.wikimedia.org/w/index.php?                                                          commons.wikimedia.org/w/index.php?curid=18553353
+                                                  curid=12743250
+  CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                    Two major approaches
+            Per-pixel - “Raytracing”                     Per-object - “Rasterization”
+      By Henrik - Own work, GFDL, https://commons.wikimedia.org/w/index.php?curid=3869326
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                          Per-pixel
+                                                         • Easy to parallelize but hard to map 
+                                                            to hardware 
+                                                         • Expensive! 
+                                                         • It can be extended to model many 
+                                                            physical phenomena such as 
+                                                            internal scattering, diffraction, 
+                                                            reflections, etc. 
+                                                         • Used to obtain high quality images
+      By Henrik - Own work, GFDL, https://commons.wikimedia.org/w/index.php?curid=3869326
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                Per-object
+                                               • Easy to map to hardware 
+                                               • While it cannot model directly 
+                                                 complex effects, we can 
+                                                 approximate them 
+                                               • Used in interactive 
+                                                 applications (mostly)
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                               Course Goals
+       • Study the fundamental mathematical concepts used in image 
+          synthesis algorithms 
+       • Implement a rendering system based on ray tracing 
+       • Implement a rendering system based on object-order rendering 
+          (rasterization)
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                  Prerequisites
+        • Linear Algebra 
+        • We will quickly review the concepts that you need, 
+          if you are not familiar with basis, points, vectors, matrices and linear systems, 
+          please review it on the textbook (Chapter 2, 5) 
+        • C++  
+          • We will review the basic concepts of C++, comparing them with Java. Keep 
+             this reference at hand http://www.cppreference.com 
+          • Why C++?
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Organization
+      • Communication through the course repository/website 
+      • Brightspace 
+      • Weekly lecture 
+      • Microsoft Teams
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                   Lectures
+       • I will upload the slides on the website before the class, so that you 
+         can directly annotate them 
+       • For every class, I will always add references in the end to the 
+         textbook and/or external resources 
+       • At the end of every lecture, I will quickly introduce the topic of the 
+         next lecture and give you pointers — you are encouraged to take a 
+         look at the material before I present it in class
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                               Lectures
+      • Please interrupt me at any time to ask questions
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                  Material
+                                                   https://www.wikipedia.org
+    Fundamentals of Computer Graphics, Fourth Edition  
+    4th Edition by Steve Marschner, Peter Shirley
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                     Policy
+       • You are encouraged to consult with your classmates/friends but 
+         collaboration in the assignments is not allowed 
+       • You are not allowed to copy code online 
+       • You are not allowed to use external libraries (except those provided 
+         in the assignments) 
+       • We will use plagiarism tools to validate all homework
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                     Basic Math
+        • Sets 
+        • Functions/Maps                If you are not familiar with some of these topics, 
+                                                refresh them before the next class.
+        • Intervals 
+        • Logarithm 
+        • Solving Quadratic Equations 
+        • Trigonometry 
+        • Basic Linear Algebra
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider

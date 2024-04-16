@@ -1,0 +1,415 @@
+                   Introduction to C++
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                 Why C++?
+       • It is the industry standard for Computer Graphics 
+       • It allows to write highly efficient code in a convenient way 
+       • I will give an overview of its main features, if you never used it before 
+         you will have to study it on your own 
+       • The quality of the code will not be evaluated in the assignments. 
+         However, if you learn how to write good C++ code it will greatly 
+         simplify the homework
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            What is C++?
+      • It is a compiled language:
+                .h
+                         Compiler      Object File
+               .cpp
+                                                       Linker      Executable
+                .h
+                         Compiler      Object File
+               .cpp
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                  Makefiles and CMAKE
+      • When some files are changed, the compiler needs to be called again 
+      • A “make system” takes care of this for you 
+      • We use CMAKE, it is straightforward to use and you can just take a 
+         look at the provided files and do cut&paste 
+      • Important: you need to first launch CMAKE to generate a project file, 
+         then use the platform dependent make system to compile
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                          CMAKE
+        • If your project is in a folder Assignment_1, you need to: 
+           • mkdir build; cd build 
+           • cmake ../ 
+        • This will create the project. To compile it: 
+           • make (macosx/linux) 
+           • Open the project with visual studio on windows 
+        • As an alternative, you can use VSCode or CLion that does all of this for you!
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                        Basic CMakeLists.txt
+           cmake_minimum_required(VERSION 2.8.12) 
+           project(Assignment1) 
+           ### Add src to the include directories 
+           include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src") 
+           ### Include Eigen for linear algebra 
+           include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../ext/eigen") 
+           ### Compile all the cpp files in src 
+           file(GLOB SOURCES 
+           "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" 
+           ) 
+           add_executable(${PROJECT_NAME}_bin ${SOURCES}) 
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                 Demo
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                        C++
+       • It is flexible, and many of the features are optional: 
+         • it can be used as an extension of C++, with no objects 
+         • it can be used as a fully object oriented language 
+         • it has many advanced features such as “templates” that are very 
+            useful to write efficient code that is also readable
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                    Comparison with Java
+       • Java: Everything must be placed in a class. C++: We can deﬁne 
+         functions and variables outside a class, using the same syntax used in 
+         ANSI C. The ”main“ function must be deﬁned outside a class. 
+       • Java: All user-deﬁned types are classes. C++: We can deﬁne C types 
+         (enum,struct,array). 
+       • Java: Single Inheritance. C++: Multiple Inheritance
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                    Comparison with Java
+       • Java: No explicit pointers. C++: Explicit pointers and ”safe pointers“ 
+         (called Reference) are available. 
+       • Java: Automatic memory management. C++: Manual memory 
+         management (like C) or semi-automatic management (shared 
+         pointers, http://en.cppreference.com/w/cpp/memory/shared_ptr ). 
+       • Java: All objects are allocated on the heap. C++: An object can be 
+         allocated on the heap or on the stack.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                      C Pointers
+                           p is not initialized here, it contains a random value
+        • int* p;  
+         It deﬁnes a pointer p to an integer  
+        • int x; p = &x;  
+         It deﬁnes a variable x and assigns the address of x to p. 
+        • (*p) = 15;  
+         It assigns the value 15 to the location pointed by p. It changes the value of x
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                Reference Type Modifier &
+        • int& p;  
+        Error! A reference must always be initialized.  
+        • int x; int& p = x;  
+        Deﬁne a variable x and a reference to it called p. P behaves like a variable, it 
+        does not use the notation used for pointers.  
+        • p = 15;  
+        Assign the value 15 to the reference p. The value of x is now 15.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+              Reference Type Modifier &
+       • Reference types are safe, they behave like pointers, but they cannot 
+         contain a dangling value 
+       • Use them extensively and avoid to use pointers at all costs! Pointers 
+         are only needed in very few cases and only for performance reasons 
+       • For more information: Wikipedia
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                        Example of using &
+       void swap(int& a, int& b) 
+       {  
+         int s = b;  
+         b = a;  
+         a = s;  
+       }
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Classes - Java
+      class point 
+      {   
+        public ﬂoat x; 
+        public ﬂoat y; 
+        public void print() 
+        { 
+          System.out.println("Point(" + x + "," + y + “)"); 
+       } 
+        public void set(ﬂoat x0, ﬂoat y0) 
+        { 
+            x = x0; 
+            y = y0; 
+        } 
+        public point(ﬂoat x0, ﬂoat y0)  
+        { 
+          set(x0,y0);   
+        } 
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Classes - C++
+            File - point.h 
+      class point {   
+        public:   
+          ﬂoat x; ﬂoat y; 
+          void print(); 
+          void set(ﬂoat x0, ﬂoat y0); 
+          point(ﬂoat x0, ﬂoat y0); 
+      }; <------- NOTE: Remember the ";" 
+            File - point.cpp 
+      #include "point.h" 
+      void point::print() 
+      { printf("Point %f,%f", x, y); } 
+      void point::set(ﬂoat x0, ﬂoat y0) 
+      { x = x0; y = y0; } 
+      point::point(ﬂoat x0, ﬂoat y0) 
+      { set(x0,y0); } 
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                       Visibility
+       • C++ supports 3 types of visibility associated to a method or a variable 
+          inside a class: 
+          • Public: the function or variable can be used in any functions 
+          • Private: the function or variable can be used only in function deﬁned 
+            inside the same class. It is not possible to use it in any derived class 
+          • Protected: the function or variable can be used in functions deﬁned 
+            in the class or in derived classes
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                Method body in .h or .cpp?
+        • Usually, a .h ﬁle must contain only prototypes of functions and classes. Since 
+          they are included in other ﬁles, a big .h ﬁle will slow down the compilation of all 
+          the source ﬁles that include it 
+        • On the other hand, C++ allows the deﬁnition of the body of a method 
+          directly in the deﬁnition of the class  
+        • When this is done, the body of the method is compiled in every source ﬁle that 
+          include its deﬁnition, and the compiler can perform optimization on it (inline 
+          methods). This is very useful for small methods that are called millions of times. 
+          In this case the run-time performance gain justify the increment of compilation 
+          time and binary size
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                              Example
+      class point  
+      {   
+        public:  
+          point(ﬂoat x0, ﬂoat y0) 
+          { 
+            x = x0; 
+            y = y0; 
+          } 
+          ﬂoat& x() { return x; } 
+          ﬂoat& y() { return y; } 
+        private:  
+          float x; float y; 
+      }; 
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+          How to write a header (.h) file
+      • A single .h can be included by multiple ﬁles. Suppose that ﬁle A.h includes both B.h and C.h. File 
+        B.h includes C.h too. 
+      • Every ﬁle that includes A.h will contain two versions of C.h inside and it will inevitably lead to 
+        compilation error due to the repeated deﬁnition of the same classes/functions. 
+      • To avoid it we tell the compiler to include each .h once per source ﬁle using the #ifndef directive.
+       #pragma once             #ifndef FILENAME_H_  
+                                #define FILENAME_H_           A.h
+       code
+                                code 
+                                                          B.h     C.h
+                                #endif
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+              Dynamic and Static Binding
+       • All methods in java are subject to dynamic binding 
+       • The C++ methods are not subject to dynamic bindings. It is possible to enable 
+          dynamic binding for a particular method if the method prototype is preceded by 
+          virtual. 
+          • Example: virtual void someMethod(int a);
+         Every time a virtual function is called, the run-time environment must check 
+          the dynamic type of the interested object and ﬁnd the correct method to 
+            call. With static binding the compiler can decide the method to call at 
+                                           compile time.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                Creating Objects - Stack
+       • A new object can be created in the same way as a variable 
+       • In this case the object is allocated on the stack 
+       • Suppose that we deﬁned a class Point, with two standard constructors. The ﬁrst is the default 
+        constructor that does not accept any parameter, the second accepts a pair of ﬂoat numbers. An 
+        object can be created with: 
+         • Point p; <— No parameters, no parenthesis (Point p(); is wrong!)  
+         • Point p(2.0,3.0); <— The parenthesis are required if the constructor has one or more parameters
+           The object will be destroyed when the variable p goes out of scope.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                Creating Objects - Heap
+       • A new object can be created with the operator new 
+       • In this case the object is allocated on the heap. Suppose that we deﬁned a class Point, 
+        with two standard constructors. The ﬁrst is the default constructor that does not accept 
+        any parameter, the second accepts a pair of ﬂoat numbers. An object can be created with: 
+         • Point* p = new Point; <— No parameters, parenthesis optional (Point* p = new Point(); 
+           is ok)  
+         • Point* p = new Point(2.0,3.0);
+        The object will NOT be destroyed when the variable p goes out of scope. It 
+                 must be manually deallocated using the operator delete.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                 Heap vs Stack
+                       Stack                                              Heap
+        • The deallocation is automatic,                 • The deallocation is manual, the 
+          cannot be used if the object                     user has control over the 
+          must survive outside the scope                   deallocation of the object. 
+          of the variable. 
+                                                         • Memory leaks happen in this way! 
+        • Memory leaks cannot happen 
+                                                         • ”Slow“, to be used with care, in 
+        • ”Fast“, to be used when it is                    particular if you allocate a lot of 
+          possible.                                        small objects.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+              Constructor and Destructor
+       • As in Java every class must have a constructor. It is deﬁned in the same 
+         way as a method, but with the name equal to the class name and no 
+         return type 
+       • It is possible to provide more than one constructor for a single class, but 
+         their prototypes must be different 
+       • A C++ class must also have a destructor, that it is called when the class is 
+         destroyed. This can happens when an object on stack goes out of scope, 
+         or when an object on the heap is deleted with the delete keyword
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                 Example - Don’t do it!
+      class PointPair 
+      { 
+      public: 
+        PointPair() { init(); } 
+        PointPair(Point* xp, Point* yp) {  
+          p1=xp; p2=yp; } 
+        virtual ~PointPair() { delete p1; delete p2; } 
+         
+        void init() 
+        { p1 = new Point; p2 = new Point; } 
+         
+      Point* p1; 
+      Point* p2; 
+      };
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                       Example - Fixed
+      class PointPair 
+      { 
+      public: 
+        PointPair() { init(); } 
+        PointPair(Point* xp, Point* yp) {  
+          init(); *p1=*xp; *p2=*yp; } 
+        virtual ~PointPair() { delete p1; delete p2; } 
+         
+        void init() 
+        { p1 = new Point; p2 = new Point; } 
+         
+      Point* p1; 
+      Point* p2; 
+      };
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+          Public and Private Inheritance
+      class point3D : public point 
+      { 
+        public: 
+          float z; 
+          point3D(float x0, float y0, float z0) : point(x0,y0) 
+          {  z = z0;  } 
+      }; 
+      • C++ uses ”:“ to separate the name of the class from the list of its parent classes 
+      • The same syntax is used to call the constructor of the parent class (line 5 and 6) 
+      • The public keyword (line 1) before the class point, indicates that the (public) methods of point will 
+       become public in point3D 
+      • It is possible to reduce the visibility of the inherited methods/variables changing public in private
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            C++ Templates
+       • C++ supports generics. The syntax is similar to the one used in java 
+         generics but they are implemented differently  
+       • In java a generic class is compiled independently of the parameters, and 
+         the run-time environment takes care of the required type conversions at 
+         run time 
+       • In C++ for every set of parameters, the class is recompiled. The gain in 
+         speed achieved by the C++ generics is due to the reduction of work for 
+         the runtime environment. The drawback is the increase in size of the ﬁnal 
+         executable.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                        C++ Templates
+                                               template<class T> 
+                                               class Pair 
+      • Both the prototype and the             { 
+        implementation of a template             private: 
+                                                   T f; T s; 
+        class must be placed inside the          public:   
+                                                   inline T& first() 
+        header ﬁle! Elsewhere the                  { return f;  } 
+        compiler is not able to ﬁnd the            inline T& second() 
+        source code necessary to                   { return s; } 
+                                               }; 
+        recompile the class at every           ------------------ 
+                                               Pair<double> p1; 
+        instantiation.                         p1.first() = 5.6; 
+                                               double d = p1.first(); 
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                    Operator Overloading
+       • The operator overloading is a technique that allows to call a 
+         predeﬁned function using the notation assigned to a standard 
+         operator. 
+       • In C++ it is only possible to overload the operators already available 
+         (+, -, *, =, etc.), it is not possible to deﬁne new operators 
+       • Eigen uses operator overloading extensively!
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+               Standard Template Library
+       • STL is a library included in the C++ standard. 
+       • Check http://www.cppreference.com for a manual. 
+       • We will look only at the basic dynamic data structures, please take a 
+         look at the documentation to avoid to waste time rewriting stuff 
+         already available. 
+       • Most of the classes in STL are based on templates to specify the type 
+         of managed data.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                               Iterators
+      • Similarly to java, the containers in STL are based on the concept of an iterator.  
+      • An iterator behave exactly as a pointer of the same type of the underlining container.  
+      • Suppose we deﬁned a list of integer (class list<int> as we will see later), the corresponding 
+        iterator type will be list<int>::iterator.  
+      • An iterator must be created with the methods begin() and rbegin() present in every 
+        container. They return an iterator pointing the ﬁrst and the last element, respectively.  
+      • There are two special iterators, container.end() and container.rend(), that points to an 
+        element after the last and an element before the ﬁrst, respectively.  
+      • They are used to check when we reach the end or the beginning of our container.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                    Iterator’s Operators
+      • An iterator it implements the following operators:  
+        • ++it ti++ (what to use in a context where their behavior is the same?) 
+        • --it it-- (not supported by all iterators) 
+        • *it (read or edit the pointed item) 
+        • it->method() (equivalent to (*it).method()) 
+        • it == it2 (check if the two iterators point to the same element) 
+        • it != it2 (check if the two iterators point to different elements) 
+        • it = it + x (x is an integer, move the iterator forward of x elements) 
+        • it = it - x (x is an integer, move the iterator backward of x elements)
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                Vectors
+      • A vector is a dynamic array. Use it in any case you need an array, the overhead in respect to a c array is 
+       negligible. The vector class is a template, it must be initialized with the type of the contained elements. 
+        • #include <vector>                                 <— header ﬁle containing the deﬁnition  
+        • using namespace std;                           <— vector is in the std namespace vector<int>  
+        • vector<int> v;                                        <— it creates a container of integers  
+        • vector<int*> v;                                       <— it creates a container of pointers to integers 
+      • Useful methods and operators, we assume that vec is a vector: 
+        • vec.push_back(item)             - it inserts item at the end of the vector, if no space is available the entire 
+         array is reallocated and expanded to make room for the new item  
+        • vec.erase(iterator)                 - it remove the item pointed by iterator (warning, the array must be 
+         reallocated if the elements removed is not the last)  
+        • vec[i]                                     - ith element (starts from 0!)  
+        • vec.resize(i)                          - it resizes the vector to size i
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                   Lists
+      • A C++ list is a double linked list. The list class is a template, it must be initialized with the type of the 
+       contained elements. 
+        • #include <list>                                               <— header ﬁle containing the deﬁnition  
+        • using namespace std;                                   <— list is in the std namespace  
+        • list<int> l;                                                       <— it creates a container of integers  
+        • list<int*> l;                                                      <— it creates a container of pointers to integers 
+      • Useful methods and operators, we assume that lis is a list: 
+        • lis.push_back(item)                                        - it inserts item at the end  
+        • lis.push_front(item)                                         - it inserts item at the beginning  
+        • lis.erase(iterator)                                            - it removes the item pointed by iterator  
+        • list.front()                                                        - ﬁrst element  
+        • list.back()                                                       - last element  
+        • lis.clear()                                                        - it removes all elements
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                     Example
+       #include <list> 
+       list<int> li; 
+       list<int>::iterator it; 
+       li.push_back(5); li.push_back(6); li.push_back(7); ... 
+       for(it = li.begin(); it != li.end(); ++li) 
+       { 
+         int& temp = *it; 
+         // do something with temp 
+       }
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Assignment 1
+      • Let’s take a look at the provided code and at the assignment 
+         description
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                             References
+      • Thinking in C++ second edition - Bruce Eckel http://
+        www.mindview.net/Books/TICPP/ThinkingInCPP2e.html  
+      • Wikipedia http://en.wikipedia.org/wiki/C%2B%2B  
+      • Cpp Reference http://www.cppreference.com 
+      • Cmake  https://cmake.org
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider

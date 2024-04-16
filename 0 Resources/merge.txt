@@ -1,0 +1,2976 @@
+----------------------------------------------------------------
+1CHCK
+----------------------------------------------------------------
+Introduction to
+Computer Graphics
+What is Computer Graphics?
+• In a broad sense is the use of a computer to create and manipulate
+images
+• It involves a combination of hardware (input, processing, output)
+and software
+• It can be 2D or 3D
+• It is used in most electronic devices
+Graphic Areas
+Modeling
+Graphic Areas
+Rendering
+Graphic Areas
+Animation
+Graphic Areas
+Copyright: Andrew Guyton
+User Interaction
+Graphic Areas
+Copyright: Maurizio Pesce
+Virtual Reality
+Graphic Areas
+Visualization
+Graphic Areas
+By IkamusumeFan - Own work, CC BY-SA 4.0,
+Image Processing
+Graphic Areas
+By Creative Tools from Halmdstad, Sweden - CreativeTools.se - VIUscan - Laser-scanned - ZPrinter - 3D printed -
+Viking Belt Buckle 24, CC BY 2.0,
+Geometry Acquisition
+Applications
+Video Games Cartoons/Visual Effects/Films
+Copyright: Nintendo Copyright: Blender Foundation
+Applications
+CAD/CAM Simulation
+By Andreas Babucke - self made with EAS3, original upload at
+Bild:Lambda2_scherschicht.png, CC BY 3.0 de, ?
+curid=2999003
+Applications
+Medical Imaging Information Visualization
+By Etan J. Tal - Own work, CC BY 3.0, https:// By Mcstol - Own work, CC BY-SA 3.0, https://
+commons.wikimedia.org/w/index.php? commons.wikimedia.org/w/index.php?curid=18553353
+curid=12743250
+Two major approaches
+Per-pixel - “Raytracing” Per-object - “Rasterization”
+By Henrik - Own work, GFDL,
+Per-pixel
+• Easy to parallelize but hard to map
+to hardware
+• Expensive!
+• It can be extended to model many
+physical phenomena such as
+internal scattering, diffraction,
+reflections, etc.
+• Used to obtain high quality images
+By Henrik - Own work, GFDL,
+Per-object
+• Easy to map to hardware
+• While it cannot model directly
+complex effects, we can
+approximate them
+• Used in interactive
+applications (mostly)
+Course Goals
+• Study the fundamental mathematical concepts used in image
+synthesis algorithms
+• Implement a rendering system based on ray tracing
+• Implement a rendering system based on object-order rendering
+(rasterization)
+Prerequisites
+• Linear Algebra
+• We will quickly review the concepts that you need,
+if you are not familiar with basis, points, vectors, matrices and linear systems,
+please review it on the textbook (Chapter 2, 5)
+• C++
+• We will review the basic concepts of C++, comparing them with Java. Keep
+this reference at hand
+• Why C++?
+Organization
+• Communication through the course repository/website
+• Brightspace
+• Weekly lecture
+• Microsoft Teams
+Lectures
+• I will upload the slides on the website before the class, so that you
+can directly annotate them
+• For every class, I will always add references in the end to the
+textbook and/or external resources
+• At the end of every lecture, I will quickly introduce the topic of the
+next lecture and give you pointers — you are encouraged to take a
+look at the material before I present it in class
+Lectures
+• Please interrupt me at any time to ask questions
+Material
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Policy
+• You are encouraged to consult with your classmates/friends but
+collaboration in the assignments is not allowed
+• You are not allowed to copy code online
+• You are not allowed to use external libraries (except those provided
+in the assignments)
+• We will use plagiarism tools to validate all homework
+Basic Math
+• Sets
+• Functions/Maps If you are not familiar with some of these topics,
+refresh them before the next class.
+• Intervals
+• Logarithm
+• Solving Quadratic Equations
+• Trigonometry
+• Basic Linear Algebra
+----------------------------------------------------------------
+2CHCK
+----------------------------------------------------------------
+Rasterization - Theory
+Image Copyright: Andrea Tagliasacchi
+2D Canvas
+(1.0, 1.0) (width-1, height-1)
+canvas (0, 0) pixel grid
+(-1.0, -1.0)
+Image Copyright: Andrea Tagliasacchi
+2D Canvas
+(1.0, 1.0) (width-1, height-1)
+canvas (0, 0) pixel grid
+(-1.0, -1.0)
+Image Copyright: Andrea Tagliasacchi
+Implicit Geometry Representation
+• Define a curve as zero set of 2D implicit function
+• F(x,y) = 0 → on curve
+• F(x,y) < 0 → inside curve
+• F(x,y) > 0 → outside curve
+• Example: Circle with center (c , c ) and radius r
+x y
+F(x,y)=(xc )2+(yc )2r2
+x y
+Implicit Geometry Representation
+• Define a curve as zero set of 2D implicit function
+• F(x,y) = 0 → on curve
+• F(x,y) < 0 → inside curve
+• F(x,y) > 0 → outside curve
+By Ag2gaeh - Own work, CC BY-SA 4.0, https://
+commons.wikimedia.org/w/index.php?curid=45004240
+Implicit Rasterization
+for all pixels (i,j)
+(x,y) = map_to_canvas (i,j)
+if F(x,y) < 0
+set_pixel (i,j, color)
+Barycentric Interpolation
+• Barycentric coordinates:
+• p = αa + βb + γc with α + β + γ = 1
+c
+p
+b
+a
+Barycentric Interpolation
+c
+• Barycentric coordinates:
+• p = αa + βb + γc with α + β + γ = 1 p
+b
+• Unique for non-collinear a,b,c a
+2 ax bx cx 3 2 ↵ 3 2 px 3
+4 a b c 5·4  5 = 4 p 5
+y y y y
+111  1
+Barycentric Interpolation
+• Barycentric coordinates:
+• p = αa + βb + γc with α + β + γ = 1
+• Unique for non-collinear a,b,c
+c
+• Ratio of triangle areas
+↵(p)=area(p,b,c)
+area(a,b,c) p
+(p)=area(p,c,a) b
+area(a,b,c) a
+(p)=area(p,a,b)
+area(a,b,c)
+Barycentric Interpolation
+• Barycentric coordinates:
+• p = αa + βb + γc with α + β + γ = 1
+• Unique for non-collinear a,b,c
+• Ratio of triangle areas
+• α(p), β(p), γ(p) are linear functions
+1 1
+a c a c a c
+1
+b b b
+Barycentric Interpolation
+• Barycentric coordinates:
+• p = αa + βb + γc with α + β + γ = 1
+• Unique for non-collinear a,b,c
+• Ratio of triangle areas c
+• α(p), β(p), γ(p) are linear functions β<0 α<0
+• Gives inside/outside information α,β,γ > 0
+b
+a γ <0
+Barycentric Interpolation
+• Barycentric coordinates: C
+• p = αa + βb + γc with α + β + γ = 1
+• Unique for non-collinear a,b,c
+• Ratio of triangle areas P
+• α(p), β(p), γ(p) are linear functions B
+A
+• Gives inside/outside information
+• Use barycentric coordinates to interpolate vertex normals (or other data, e.g. colors)
+n(P)=↵·n(A)+·n(B)+·n(C)
+Color Interpolation
+Per-vertex Per-pixel
+C
+P
+B
+A
+Evaluate color on vertices, Interpolates positions and normals,
+then interpolates it then evaluate color on each pixel
+-
+part-2-the-real-time-rendering-pipeline/
+Triangle Rasterization
+• Each triangle is represented as three 2D points (x , y ), (x , y ), (x , y )
+0 0 1 1 2 2
+• Rasterization using barycentric coordinates
+x = α ∙ x + β ∙ x + γ ∙ x
+0 1 2 (x0, y0)
+y = α ∙ y + β ∙ y + γ ∙ y γ < 0 β < 0
+0 1 2
+α + β + γ = 1 (x , y ) (x, y)
+1 1 (x , y )
+α < 0 2 2
+Triangle Rasterization
+• Each triangle is represented as three 2D points
+(x , y ), (x , y ), (x , y )
+0 0 1 1 2 2
+• Rasterization using barycentric coordinates
+for all y do
+for all x do
+compute (α,β,γ) for (x,y)
+if (α ∈ [0,1] and β ∈ [0,1] and γ ∈ [0,1]
+set_pixel (x,y)
+Clipping
+• Ok if you do it brute force
+• Care is required if you are explicitly tracing the boundaries
+Objects Depth Sorting
+• To handle occlusion, you
+can sort all the objects in
+a scene by depth
+• This is not always
+possible!
+z-buffering
+• You render the image both in the
+Image and in the depth buffer, where
+you store only the depth
+• When a new fragment comes in, you
+Image Depth (z) draw it in the image only if it is closer
+• This always work and it is cheap to
+evaluate! It is the default in all graphics
+hardware
+• You still have to sort for transparency…
+z-buffer quantization and “z-fighting”
+• The z-buffer is quantized (the
+number of bits is heavily
+dependent on the hardware
+platform)
+• Two close object might be
+quantized differently, leading to
+strange artifacts, usually called
+“z-fighting”
+Super Sampling Anti-Aliasing
+• Render nxn pixels instead of one
+• Assign the average to the pixel
+c1 c2
+c1 +c2 +c3 +c4
+4
+c3 c4
+Image Copyright: Fritz Kessler
+Many different names and variants
+• SSAA (FSAA)
+• MSAA
+• CSAA MSAA
+• EQAA
+• FXAA
+• TX AA
+Copyright: tested.com (
+1194-how-to-choose-the-right-anti-aliasing-mode-for-your-
+gpu/#)
+References
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapter 8
+----------------------------------------------------------------
+3CHCK
+----------------------------------------------------------------
+Rasterization - Implementation
+Recap: Viewing Transformation
+object space camera space screen space
+model camera projection viewport
+world space canonical
+view volume
+Image Copyright: Andrea Tagliasacchi
+How to do it?
+• Specialized hardware — Graphics Processing Unit (GPU)
+• APIs to interact with the hardware
+• OpenGL/Vulkan (Windows, Linux, Android)
+• DirectX (Windows)
+• Metal (MacOS X, iOS)
+Context Creation
+• Before you can draw anything you need to:
+• Open a window (i.e. ask the OS to give you access to a portion of
+the screen)
+• Initialize the API and assign the available screen space to it
+• This is a technical step and it is heavily dependent on the operating
+system and on the hardware
+Window Manager
+• There are many libraries that take care of this for you, hiding all the
+complexity and providing a cross-platform and cross-hardware
+interface
+• Some examples are GLFW and SDL
+• A window manager usually provides an event management system
+CPU and GPU memory
+You write code here … … which acts here.
+CPU GPU
+2-12 cores 1k+ cores
+Cache (1-12Mb) PCI express Cache (<1kb/core)
+4-64 Gb RAM 4-16 Gb STRUCTURED RAM
+Memory Buffer with a Mesh
+Technical and OS-Specific
+• Writing code for the GPU makes debugging harder, since the standard
+debugging tools cannot be used
+• The code needs to be customized for the specific operating system you are
+developing for
+• The good news is that all modern APIs, at a high-level, offer the same concepts
+and the same features
+• We will thus study a toy software rasterizer that, while slower than hardware
+solutions, will allow you to fully understand how rasterization works. The jump
+from the software rasterizer to any modern API is small and mostly technical
+Software Rasterization
+raster.h/raster.cpp
+• The rasterizer mimics the API of modern OpenGL4/Vulkan/DirectX12
+• It is minimalistic, supporting only rendering of triangles and lines
+• It is readable, less than 200 lines of C++ code
+• It is expected that you understand every single line after this slideset
+• It allows to render the same scenes as HW solutions, it is just slower
+• I recommend to render small scenes in debug mode, and then switch to
+release for real ones
+Rasterization Pipeline
+Input Output
+Vertex Attributes RGBA Image
+Uniform Attributes
+raster.h/.cpp
+Vertex Primitive Rasterization Fragment Blending
+Shader Assembly Shader Shader
+Vertex Input
+• You have to send to the rasterizer a set of vertex attributes:
+• World Coordinates
+• Color
+• Normal
+• You can pass as many as you want, but remember that memory/
+bandwidth is precious, you want to send only what is required by the
+shaders
+Drawing a Triangle
+• Only the triangles in the canonical cube will be
+rendered. The cube will be stretched to fill all
+available screen space.
+Shaders
+• The name is historical — they were introduced to allow customization of the
+shading step of the traditional graphics pipeline
+• Shaders are general purpose functions that will be executed in parallel on the
+GPU (serially in our software rasterizer, making it parallel is an interesting final
+project)
+• They are usually written in a custom programming language, but in our case
+they will be standard C++ functions
+• They allow to customize the behavior of the rasterizer to achieve a variety of
+effects
+Rasterization Pipeline
+Input Output
+Vertex Attributes RGBA Image
+Uniform Attributes
+Vertex Primitive Rasterization Fragment Blending
+Shader Assembly Shader Shader
+Rasterization Pipeline
+Input Output
+Vertex Attributes RGBA Image
+Uniform Attributes
+Vertex Primitive Rasterization Fragment Blending
+Shader Assembly Shader Shader
+Vertex Shader
+• The vertex shader is a function processing each vertex (and its
+attributes) as they appear in the input
+• Its duty is to output the final vertex position in the canonical bi-unit
+cube and to output any data required by the fragment shader
+• All transformations from world to device coordinates happen here
+Vertex Shader
+object space camera space screen space
+model camera projection viewport
+world space canonical
+view volume
+A Simple Vertex Shader
+The syntax [] defines a lambda function.
+Rasterization Pipeline
+Input Output
+Vertex Attributes RGBA Image
+Uniform Attributes
+Vertex Primitive Rasterization Fragment Blending
+Shader Assembly Shader Shader
+Fragment Shader
+• The output from the vertex shader is interpolated over all the pixels
+on the screen covered by a primitive
+• These pixels are called fragments and this is what the fragment
+shader operates on
+• It has one mandatory output, the final color of a fragment. It is up to
+you to write the code for computing this color from all the attributes
+that you attached to the vertices
+Vertex Shader Fragment Shader
+object space camera space screen space
+model camera projection viewport
+world space canonical
+view volume
+A simple fragment shader
+The colors produced by the
+fragment shader must be between
+0.0 and 1.0
+Rasterization Pipeline
+Input Output
+Vertex Attributes RGBA Image
+Uniform Attributes
+Vertex Primitive Rasterization Fragment Blending
+Shader Assembly Shader Shader
+Blending Shader
+• The blending shader decides how to blend a fragment with the
+colors/attributes already present on the corresponding pixel of the
+framebuffer
+We are all set!
+• After specifying the 3 shaders (vertex, fragment, blending) we can
+rasterize the vertices (every 3 vertices form a triangle):
+• Finally, the framebuffer can be saved as a png as we did for
+raytracing
+Attributes
+• The rasterizer uses an additional file called attributes.h to define the
+struct used for vertex, fragment, and framebuffer attributes
+• You will have to change this depending on what informations you
+want your shaders to have access to
+Vertex Attributes
+Fragment Attributes
+FrameBuffer Attributes
+Uniforms
+• Uniform are values that are constant for the entire scene, i.e. they are
+not attached to vertices
+• They are essentially global variables within the shaders
+• All vertices and all fragments will see the same value
+• For example, let’s change the demo code to use a uniform to store
+the triangle color
+Some Tips
+• Start from a WORKING application and do your changes
+incrementally.
+• You can add breakpoints inside raster.h/.cpp to check what is going
+wrong
+• You can also export the framebuffer to a png at any point in the code
+to see what is going on
+Software Rasterization
+Examples
+Rasterization Pipeline
+Input Output
+Vertex Attributes RGBA Image
+Uniform Attributes
+raster.h/.cpp
+Vertex Primitive Rasterization Fragment Blending
+Shader Assembly Shader Shader
+Live Coding Session
+• We will code together a few demos to showcase different features
+and concepts that we studied in the last lecture
+• No need to take notes, all the source files are available in the “extra”
+folder of Assignment 5
+Starting Code
+Supported Primitives
+Let’s take a detailed look at how these 4 functions work
+Line Rasterization
+• Let us draw a red border instead of a triangle
+• python rename.py lines
+Vertex Attributes
+• Let us add a color vertex attribute and interpolate it inside a triangle
+• python rename.py attributes
+View/Model Transformation
+• View/Model transformations are applied in the vertex shader
+• They are passed to the shader as uniform (global variables)
+• To create transformation matrices you can do it by hand or use the
+geometry module of Eigen:
+group__TutorialGeometry.html
+Viewport and View Transformation
+object space camera space screen space
+model camera projection viewport
+canonical
+view volume
+Viewport and View Transformation
+object space camera space screen space
+model camera projection viewport
+canonical
+view volume
+How to prevent viewport distortion?
+• We need to adapt the view depending on the size of the framebuffer
+• We can then create a view transformation that maps a box with the
+same aspect-ratio of the viewport into the unit cube
+• Equivalently, we are using a “camera” that has the same aspect ratio
+as the window that we use for rendering
+• In this way, the distortion introduced by the viewport transformation
+will cancel out
+View Transformation
+• Let’s add a view transformation to prevent viewport distortion
+• python rename.py view
+Tests (Special case of Blending)
+• The tests determine if a fragment will affect the color in the
+framebuffer or if it should be discarded
+• There are main use cases:
+• Depth Test - Discards all fragments with a z coordinate bigger than
+the value in the depth buffer
+• Stencil Test - Discards all fragments outside a user-specified mask
+Depth Test
+• Let’s draw a couple of triangles with depth test active
+• python rename.py depth
+Blending
+• Let’s see how to render a transparent triangle
+• python rename.py depth
+Animation
+• Let’s see how to render a simple animation
+• python rename.py animation
+Supersampling
+• We can render an image 4 times larger and then scale it down to
+avoid sharp edges
+• python rename.py supersampling
+Picking Objects
+• To interact with the scene (for the final project), it is common to “pick” or
+“select” objects in the scene
+• The most common way to do it is to cast a ray, starting from the point where
+the mouse is and going “inside” the screen
+• The first object that is hit by the ray is going to be the selected object
+• For picking in the exercises, you can reuse the code that you developed in the
+first assignment
+• You must account for viewing and model transformations!
+Picking via Ray Casting
+object space camera space screen space
+model camera projection viewport
+The easiest way to do it is to
+create a ray in screen space, and
+then apply all the inverse
+transformations to move it in
+object space, then you can
+compute the intersection in the
+canonical usual way.
+view volume
+References
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapter 17
+----------------------------------------------------------------
+4CHCK
+----------------------------------------------------------------
+Projective Transformations
+Viewing Transformation
+object space camera space screen space
+model camera projection viewport
+world space canonical
+view volume
+Orthographic Projection
+camera space
+y (r,t,f)
+z (l,b,n)
+x
+projection
+2 2 00r+l3
+rl rl
+6 0 2 0 t+b 7
+Morth = 6 tb tb 7
+4 002 n+f5
+nf nf
+canonical 0001
+view volume
+Perspective Projection
+• In Orthographic projection, the size of the objects does not change with
+distance
+• In Perspective projection, the objects that are far away look smaller
+Image Plane Image Plane
+y y
+s
+dy d
+ys = z
+z
+Divisions in Matrix Form
+• We would like to reuse the matrix machinery that we built in the
+previous lectures
+y = dy Image Plane
+• How do we encode divisions? s z
+• We extend homogeneous coordinates y y
+s
+d
+z
+Until now…
+• What do we have left?
+0a1 b1 c11 0x1 0a1x+b1y+c11
+@a2 b2 c2A·@yA = @a2x+b2y+c2A
+001 1 1
+• We can use the last row of the transformation:
+0 1 0 1 0 1 0a1x+b1y+c11
+a1 b1 c1 x a1x+b1y+c1
+@ A @ A @ A B ex+fy+g C
+a2 b2 c2 · y = a2x+b2y+c2 ⇠@a2x+b2y+c2A
+efg 1 ex+fy+g ex+fy+g
+1
+Intuition
+0 1 0 1
+x x/w
+• Purely algebraic: @yA⇠@y/wA
+w 1
+• Or as a projection, where each line is
+identified by a point on the plane z=1
+• Note that in this case, you can think of it as
+a transformation in a space with one more
+dimension
+Projective Transformation
+• A transformation of this form is called a projective transformation (or a homography)
+• The points are represented in homogeneous coordinates
+0 1 0 1 0 1 0a1x+b1y+c11
+a1 b1 c1 x a1x+b1y+c1 ex+fy+g
+@a b c A·@yA = @a x+b y+c A⇠Ba2x+b2y+c2C
+2 2 2 2 2 2 @ ex+fy+g A
+efg 1 ex+fy+g 1
+Example
+1,1
+0 1
+201
+@ A
+M= 030
+02/31/3 0,0
+1,3
+• It transforms a square into a quadrilateral — note that
+straight lines are preserved, but parallel lines are not!
+• Note that you can use homogeneous coordinates for as
+many transformations as you want, only when you need
+the cartesian representation you have to normalize 0,0 3,0
+Perspective Projection
+• Perspective projection is easily implementable using this machinery
+y = dy Image Plane
+s z
+0 1 y y
+✓ ◆ ✓ ◆ y s
+ys d 00
+⇠ @zA d
+1 010 z
+1
+Perspective Projection
+• We will use the same conventions that we used for orthographic:
+• Camera at the origin, pointing negative z
+• We scale x, y and “bring along” the z
+0 1
+y n 000
+(r,t,f) B C
+0 n 00
+P=B C
+@ A
+z (l,b,n) 00n+f fn
+x 001 0
+Effect on the points
+0 1
+y n 000
+(r,t,f) B C
+0 n 00
+P=B C
+@ A
+z (l,b,n) 00n+f fn
+x 001 0
+0x1 0 nx 1 0 nx 1
+z
+ByC B ny C B ny C
+PB C=B C⇠B z fnC
+@ A @ A @ A
+z (n+f)zfn n+f z
+1 z 1
+Effect on the points
+0 1
+y n 000
+(r,t,f) B C
+0 n 00
+P=B C
+@ A
+z (l,b,n) 00n+f fn
+x 001 0
+0x1 0 nx 1 0 nx 1
+z
+ByC B ny C B ny C
+PB C=B C⇠B z fnC
+@ A @ A @ A
+z (n+f)zfn n+f z
+1 z 1
+Orthographic Projection
+camera space
+y (r,t,f)
+z (l,b,n)
+x
+projection
+2 2 00r+l3
+rl rl
+6 0 2 0 t+b 7
+Morth = 6 tb tb 7
+4 002 n+f5
+nf nf
+canonical 0001
+view volume
+Complete Perspective Transformation
+0 1 2 2 00r+l3
+n 000 rl rl
+B C 6 2 t+b 7
+0 n 00 0 0 
+P=B C Morth = 6 tb tb 7
+@ A 4 2 n+f5
+00n+f fn 00 
+001 0 nf nf
+0001
+canonical
+camera space view volume
+P Morth
+Parameters?
+• How to set the parameters of the transformation?
+• If we look at the center of the center of the window then the barycenter y
+of the front back should be at (0,0,f) z (r,t,f)
+✓
+• If we want no distortion on the image we need to keep a fixed aspect x (l,b,n)
+ratio:
+• width/height = r/t (width and height are the size in pixels of the final
+image)
+• There is only one degree of freedom left, the field of view angle :
+✓
+tan✓ = t
+• 2 |n|
+• The parameters can thus by found by fixing n and . You can then
+✓
+compute t and consequently all the other parameters needed to
+construct the transformation
+References
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapter 7
+----------------------------------------------------------------
+5CHCK
+----------------------------------------------------------------
+Texture Mapping
+Sintel
+Blender Open Movie
+Sintel
+Blender Open Movie
+Bump Mapping
+Instead of encoding colors in a texture, you encode normals!
+By Bump-map-demo-smooth.png, Orange-bumpmap.png and Bump-map-demo-bumpy.png: Original uploader was Brion VIBBER at en.wikipediaLater version(s) were uploaded by McLoaf at en.wikipedia.derivative
+work: GDallimore (talk) - Bump-map-demo-smooth.png, Orange-bumpmap.png and Bump-map-demo-bumpy.png, CC BY-SA 3.0,
+Normal/Bump Mapping
+original mesh simplified mesh simplified mesh
+4M triangles 500 triangles and normal mapping
+500 triangles
+Displacement Mapping
+Instead of normals, you encode a displacement.
+Image courtesy of:
+Texture Mapping
+• The idea is the same. Instead of encoding values at vertices of triangles, you
+encode them in images.
+• You gain all the advantages of images (easy to store, compress, interpolate, sample)
+• You can encode any property that you want, the most common are:
+• Colors (Texture Mapping)
+• Normals (Bump Mapping)
+• Displacements (Displacement Mapping)
+What do you need?
+• One additional per-vertex property, the UV coordinates
+• An image uploaded to the GPU memory (2D texture)
+• The UV coordinates are interpolated inside each triangle, and used to find the corresponding value
+in the texture
+• The texture value is interpolated before it is used in the shader
+v3 Image
+v3
+p p
+v2 v2
+v1 v1
+World Coordinates UV Space
+Checkerboards are great to visualize a UV map
+“Seams” are needed for complex objects
+Image from Vallet and Levy, techreport INRIA
+How are UV maps encoded?
+• 2 versions of the mesh are stored, one for the triangles in 3D and one for those in 2D
+• The faces of the 2 meshes are in one-to-one correspondence
+• OpenGL does not support this you need to duplicate all the vertices on the seams and pass one
+single mesh. An easy (and inefficient) way to do this is by duplicating all vertices and not using an
+element buffer.
+Vertices UV
+Vertices
+Faces UV Faces
+A minimal example
+v4
+v v5
+3
+v4 v
+3
+v2 v
+v6 2
+v1 v1
+World Coordinates UV Space
+Faces UV Faces
+v1 v2 v3 v1 v2 v3
+v1 v3 v4 v4 v5 v6
+Texture Filtering
+Nearest Point Bilinear Interpolation
+Bilinear Interpolation
+D F C E = (1-u) A + u B
+F = (1-u) D + u C
+G G = (1-v) E + u F
+v
+A E B
+u
+Moire Pattern
+Mipmapping
+Mipmapping
+• Moire pattern can appear if
+the resolution of the texture
+is much higher than the
+sampling rate
+• A good solution for this
+problem is mipmapping
+By en:User:Mulad, based on a NASA image - Created by en:User:Mulad based on File:ISS from Atlantis - Sts101-714-016.jpg, CC BY-SA 3.0,
+----------------------------------------------------------------
+6CHCK
+----------------------------------------------------------------
+Mesh Parameterization
+Acknowledgement: Olga Sorkine-Hornung
+Projections
+Image Courtesy of Blender
+Surface Parameterization
+3D space (x,y,z) 2D parameter domain (u,v)
+U
+boundary boundary
+Parameterization – Definition
+• Mapping P between a 2D domain Ω and
+the mesh S embedded in 3D (the inverse = flattening)
+• Each mesh vertex has a corresponding 2D position:
+• Inside each triangle, the mapping is affine (barycentric coordinates)
+P
+U
+What is a good parametrization?
+• It depends on the application, but usually:
+• Bijectivity
+• Number of cuts and charts
+• Geometric distortion
+Bijectivity
+• Locally bijective (1-1 and onto): No triangles fold over.
+• Globally bijective:
+locally bijective +
+no “distant” areas
+overlap
+image from “Least Squares Conformal Maps”, Lévy et al., SIGGRAPH 2002
+Bijectivity: Non-Disk Domains
+Topological Cutting
+Topological Cutting
+A. Sheffer, J. Hart:
+Seamster: Inconspicuous Low-Distortion Texture Seam Layout, IEEE Vis 2002
+Segmentation
+D-Charts: Quasi-Developable Mesh Segmentation,
+D. Julius,V. Kraevoy, A. Sheffer, EUROGRAPHICS 2005
+Segmentation
+Segmentation
+By Zephyris at en.wikipedia, CC BY-SA 3.0,
+Good = “fewer cuts”?
+-1
+f
+f
+S D
+S
+-1
+f
+f
+sphere in 3D 2D surface disk
+Good = “fewer cuts”?
+but… more cuts => less distortion
+A difficult balance
+cuts distortions
+Harmonic Mapping
+Harmonic Mapping
+• Inner mesh edges as springs
+• Find minimum-energy state
+where all vertices lie in the 2D
+plane
+Harmonic Mapping
+• Inner mesh edges as springs
+• Find minimum-energy state
+where all vertices lie in the 2D
+plane
+Harmonic Mapping
+• Inner mesh edges as springs
+• Find minimum-energy state
+where all vertices lie in the 2D
+plane
+Harmonic Mapping
+• Inner mesh edges as springs
+• Find minimum-energy state
+where all vertices lie in the 2D
+plane
+Harmonic Mapping
+• Inner mesh edges as springs
+• Find minimum-energy state
+where all vertices lie in the 2D
+plane
+Harmonic Mapping
+• Inner mesh edges as springs
+• Find minimum-energy state
+where all vertices lie in the 2D
+plane
+Harmonic Mapping
+• Inner mesh edges as springs
+• Find minimum-energy state
+where all vertices lie in the 2D
+plane
+Harmonic Mapping
+• Inner mesh edges as springs
+• Find minimum-energy state
+where all vertices lie in the 2D
+plane
+• Spring energy:
+Harmonic Mapping
+• Inner mesh edges as springs
+• Find minimum-energy state
+where all vertices lie in the 2D
+plane
+• Total spring energy of the
+flattened mesh:
+Demo
+Minimizing Spring Energy
+– inner vertices
+– boundary vertices
+unknown known fixed
+flat vertex boundary
+positions positions
+Minimizing Spring Energy
+• Sparse linear system of n equations to solve!
+Choice of spring constants k_i
+• Uniform
+• Cotangent
+Tutte’s Theorem
+• If the weights are nonnegative, and the boundary is fixed to a
+convex polygon, the parameterization is bijective
+• (Tutte’63 proved for uniform weights, Floater’97 extended to arbitrary
+nonnegative weights)
+• W.T. Tutte. “How to draw a graph”. Proceedings of the London
+Mathematical Society, 13(3):743-768, 1963.
+Comparison of Weights
+uniform
+weights
+cotan
+weights
+Eck et al. 1995, “Multiresolution analysis of arbitrary meshes”, SIGGRAPH 1995
+Discussion
+• The results of cotan-weights mapping are better than those of uniform
+convex mapping (local area and angles preservation).
+• But: the mapping is not always legal (the cotan weights can be negative
+for badly-shaped triangles…)
+• In any case: sparse system to solve. Robust and efficient numerical solvers
+exist (Eigen Sparse LDLT)
+Discussion
+• Both mappings have the problem of fixed boundary –
+it constrains the minimization and causes distortion.
+• More advanced methods do not require boundary conditions.
+ABF++ method,
+Sheffer et al. 2005
+References
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapter 11
+Polygon Mesh Processing
+Mario Botsch, Leif Kobbelt, Mark Pauly, Pierre Alliez, Bruno Levy
+----------------------------------------------------------------
+7CHCK
+----------------------------------------------------------------
+Linear Algebra Primer
+Overview In this box, you will find
+references to Eigen
+• We will briefly overview the basic linear algebra concepts that we will
+need in the class
+• You will not be able to follow the next lectures without a clear
+understanding of this material
+Vectors
+Vectors
+Eigen::VectorXd
+• A vector describes a direction and a length
+• Do not confuse it with a location, which represent a position
+• When you encode them in your program, they will both require 2 (or 3) numbers to be
+represented, but they are not the same object!
+Origin
+These two are identical! Vectors represent displacements. If you represent
+the displacement wrt the origin, then they encode a location.
+Sum
+Operator +
+a+b=b+a
+a
+a+b b
+b
+a
+Difference
+Operator -
+a
+b a
+a
+ba
+ba=a+b
+Coordinates
+Operator []
+c = c1a+c2b c = a+2b
+c c
+2b
+b a
+a
+a and b form a 2D basis
+Cartesian Coordinates
+c = c1x+c2y
+• x and y form a canonical, Cartesian
+basis
+c
+y
+x
+Length
+• The length of a vector is denoted as ||a|| a.norm()
+• If the vector is represented in cartesian coordinates, then it is the L2
+norm of the vector: q
+||a|| = a2 +a2
+1 2
+• A vector can be normalized, to change its length to 1, without
+affecting the direction: CAREFUL:
+b= a b.normalize() <— in place
+||a|| b.normalized() <— returns the
+normalized vector
+Dot Product a.dot(b)
+a.transpose()*b
+a·b=||a|| ||b||cos✓
+• The dot product is related to the length of vector
+and of the angle between them
+• If both are normalized, it is directly the cosine of
+the angle between them
+a ✓
+b
+Dot Product - Projection
+• The length of the projection of
+b onto a can be computed
+a using the dot product
+b b!a=||b||cos✓= b·a
+||a||
+Cross Product Eigen::Vector3d v(1, 2, 3);
+Eigen::Vector3d w(4, 5, 6);
+v.cross(w);
+• Defined only for 3D vectors ||a ⇥ b|| = ||a|| ||b||sin✓
+• The resulting vector is perpendicular
+to both a and b, the direction
+depends on the right hand rule ||a ⇥ b|| b
+• The magnitude is equal to the area
+of the parallelogram formed by a and a
+b
+Coordinate Systems
+• You will often need to manipulate coordinate systems (i.e. for finding
+the position of the pixels in Assignment 1)
+• You will always use orthonormal bases, which are formed by pairwise
+orthogonal unit vectors :
+2D 3D
+||u|| = ||v|| =1, ||u|| = ||v|| = ||w|| =1,
+u·v=0 u·v=v·w=w·u=0
+Right-handed if: w = u ⇥ v
+Coordinate Frame
+e is the origin of the reference system
+p is the center of the pixel
+v w v
+u u
+e e
+u,v,w are the coordinates of p
+wrt the frame of reference or coordinate frame p
+(note that they depend also on the origin e)
+p=e+uu+vv+ww
+Change of frame
+a
+v w • If you have a vector a expressed in global
+u coordinates, and you want to convert it into a
+e vector expressed in a local orthonormal u-v-w
+coordinate system, you can do it using projections
+of a onto u, v, w (which we assume are expressed
+in global coordinates):
+C
+a =(a·u,a·v,a·w)
+References
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapter 2
+Matrices
+Overview
+• Matrices will allow us to conveniently represent and ally
+transformations on vectors, such as translation, scaling and rotation
+• Similarly to what we did for vectors, we will briefly overview their
+basic operations
+Matrices
+• A matrix is an array of numeric elements x11 x12Eigen::MatrixXd A(2,2)
+x21 x22
+Sum x11 x12+y11 y12=x11+y11 x12+y12
+x21 x22 y21 y22 x21 +y21 x22 +y22
+A + B = A.array() + B.array()
+x x  yx yx 
+Scalar Product y ⇤ 11 12 = 11 12
+x x yx yx A * y = A.array() * y
+21 22 21 22
+Transpose B = A.transpose();
+A.transposeInPlace();
+• The transpose of a matrix is a new matrix whose entries are reflected
+over the diagonal
+   T   2 3T  
+⇥ ⇤ 1 12 13 12
+T = 4 5 135
+12= 2 34 24 34= 246
+56
+• The transpose of a product is the product of the transposed, in reverse
+order
+(AB)T =BTAT
+Matrix Product Eigen::MatrixXd A(4,2);
+Eigen::MatrixXd B(2,3);
+• The entry i,j is given by multiplying A * B;
+the entries on the i-th row of A with
+the entries of the j-th column of B
+and summing up the results
+• It is NOT commutative (in general):
+AB6=BA
+Intuition
+2 3 2 32 3 2 3 2 32 3
+| r1 | | |||x1
+4y5=4r254x5 4y5=4c1 c2 c354x25
+| r3 | | |||x3
+y =r ·x y=x1c1+x2c2+x3c3
+i i
+Dot product on each row Weighted sum of the columns
+Inverse Matrix Eigen::MatrixXd A(4,4);
+A.inverse() <— do not use this
+to solve a large linear systems!
+• 1 1
+The inverse of a matrix is the matrix such that
+A 2 A 3 AA =I
+100
+where I is the identity matrix 4 5
+I = 010
+001
+• The inverse of a product is the product of the inverse in opposite order:
+(AB)1 =B1A1
+Diagonal Matrices Eigen::Vector3d v(1,2,3);
+A = v.asDiagonal()
+• They are zero everywhere except the diagonal:
+2 3
+a 00
+4 5
+D= 0 b 0
+00c
+• Useful properties:
+2  3
+a 100
+1 4  5
+D = 0 b 10 D=DT
+1
+00c
+Orthogonal Matrices
+• An orthogonal matrix is a matrix where
+• each column is a vector of length 1
+• each column is orthogonal to all the others
+• A useful property of orthogonal matrices that their inverse
+corresponds to their transpose:
+(RTR)=I=(RRT)
+Determinants
+• Think of a determinant as an operation between vectors.
+|ab| |abc|
+b c
+a b
+a
+Area of the parallelogram Volume of the parallelepiped
+(positive since abc is a right-handed basis)
+By Startswithj - Own work, CC BY-SA 3.0,
+?
+curid=29922624
+Linear Systems
+• We will often encounter in this class linear systems with n linear
+equations that depend on n variables.
+5x+3y7z=4 2 537 32x3 243
+• For example: 3x+5y+12z=9 43 5 12 54y5=495
+9x2y2z=3 9 2 2 z 3
+• To find x,y,z you have to “solve” the linear system. Do not use an
+inverse, but rely on a direct solver: Matrix3f A;
+Vector3f b;
+A << 5,3,-7, -3,5,12, 9,-2,-2;
+b << 4, 9, -3;
+cout << "Here is the matrix A:\n" << A << endl;
+cout << "Here is the vector b:\n" << b << endl;
+Vector3f x = A.colPivHouseholderQr().solve(b);
+cout << "The solution is:\n" << x << endl;
+References
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapter 5
+----------------------------------------------------------------
+8CHCK
+----------------------------------------------------------------
+Introduction to C++
+Why C++?
+• It is the industry standard for Computer Graphics
+• It allows to write highly efficient code in a convenient way
+• I will give an overview of its main features, if you never used it before
+you will have to study it on your own
+• The quality of the code will not be evaluated in the assignments.
+However, if you learn how to write good C++ code it will greatly
+simplify the homework
+What is C++?
+• It is a compiled language:
+.h
+Compiler Object File
+.cpp
+Linker Executable
+.h
+Compiler Object File
+.cpp
+Makefiles and CMAKE
+• When some files are changed, the compiler needs to be called again
+• A “make system” takes care of this for you
+• We use CMAKE, it is straightforward to use and you can just take a
+look at the provided files and do cut&paste
+• Important: you need to first launch CMAKE to generate a project file,
+then use the platform dependent make system to compile
+CMAKE
+• If your project is in a folder Assignment_1, you need to:
+• mkdir build; cd build
+• cmake ../
+• This will create the project. To compile it:
+• make (macosx/linux)
+• Open the project with visual studio on windows
+• As an alternative, you can use VSCode or CLion that does all of this for you!
+Basic CMakeLists.txt
+cmake_minimum_required(VERSION 2.8.12)
+project(Assignment1)
+### Add src to the include directories
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
+### Include Eigen for linear algebra
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../ext/eigen")
+### Compile all the cpp files in src
+file(GLOB SOURCES
+"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+)
+add_executable(${PROJECT_NAME}_bin ${SOURCES})
+Demo
+C++
+• It is flexible, and many of the features are optional:
+• it can be used as an extension of C++, with no objects
+• it can be used as a fully object oriented language
+• it has many advanced features such as “templates” that are very
+useful to write efficient code that is also readable
+Comparison with Java
+• Java: Everything must be placed in a class. C++: We can deﬁne
+functions and variables outside a class, using the same syntax used in
+ANSI C. The ”main“ function must be deﬁned outside a class.
+• Java: All user-deﬁned types are classes. C++: We can deﬁne C types
+(enum,struct,array).
+• Java: Single Inheritance. C++: Multiple Inheritance
+Comparison with Java
+• Java: No explicit pointers. C++: Explicit pointers and ”safe pointers“
+(called Reference) are available.
+• Java: Automatic memory management. C++: Manual memory
+management (like C) or semi-automatic management (shared
+pointers, ).
+• Java: All objects are allocated on the heap. C++: An object can be
+allocated on the heap or on the stack.
+C Pointers
+p is not initialized here, it contains a random value
+• int* p;
+It deﬁnes a pointer p to an integer
+• int x; p = &x;
+It deﬁnes a variable x and assigns the address of x to p.
+• (*p) = 15;
+It assigns the value 15 to the location pointed by p. It changes the value of x
+Reference Type Modifier &
+• int& p;
+Error! A reference must always be initialized.
+• int x; int& p = x;
+Deﬁne a variable x and a reference to it called p. P behaves like a variable, it
+does not use the notation used for pointers.
+• p = 15;
+Assign the value 15 to the reference p. The value of x is now 15.
+Reference Type Modifier &
+• Reference types are safe, they behave like pointers, but they cannot
+contain a dangling value
+• Use them extensively and avoid to use pointers at all costs! Pointers
+are only needed in very few cases and only for performance reasons
+• For more information: Wikipedia
+Example of using &
+void swap(int& a, int& b)
+{
+int s = b;
+b = a;
+a = s;
+}
+Classes - Java
+class point
+{
+public ﬂoat x;
+public ﬂoat y;
+public void print()
+{
+System.out.println("Point(" + x + "," + y + “)");
+}
+public void set(ﬂoat x0, ﬂoat y0)
+{
+x = x0;
+y = y0;
+}
+public point(ﬂoat x0, ﬂoat y0)
+{
+set(x0,y0);
+}
+Classes - C++
+File - point.h
+class point {
+public:
+ﬂoat x; ﬂoat y;
+void print();
+void set(ﬂoat x0, ﬂoat y0);
+point(ﬂoat x0, ﬂoat y0);
+}; <------- NOTE: Remember the ";"
+File - point.cpp
+#include "point.h"
+void point::print()
+{ printf("Point %f,%f", x, y); }
+void point::set(ﬂoat x0, ﬂoat y0)
+{ x = x0; y = y0; }
+point::point(ﬂoat x0, ﬂoat y0)
+{ set(x0,y0); }
+Visibility
+• C++ supports 3 types of visibility associated to a method or a variable
+inside a class:
+• Public: the function or variable can be used in any functions
+• Private: the function or variable can be used only in function deﬁned
+inside the same class. It is not possible to use it in any derived class
+• Protected: the function or variable can be used in functions deﬁned
+in the class or in derived classes
+Method body in .h or .cpp?
+• Usually, a .h ﬁle must contain only prototypes of functions and classes. Since
+they are included in other ﬁles, a big .h ﬁle will slow down the compilation of all
+the source ﬁles that include it
+• On the other hand, C++ allows the deﬁnition of the body of a method
+directly in the deﬁnition of the class
+• When this is done, the body of the method is compiled in every source ﬁle that
+include its deﬁnition, and the compiler can perform optimization on it (inline
+methods). This is very useful for small methods that are called millions of times.
+In this case the run-time performance gain justify the increment of compilation
+time and binary size
+Example
+class point
+{
+public:
+point(ﬂoat x0, ﬂoat y0)
+{
+x = x0;
+y = y0;
+}
+ﬂoat& x() { return x; }
+ﬂoat& y() { return y; }
+private:
+float x; float y;
+};
+How to write a header (.h) file
+• A single .h can be included by multiple ﬁles. Suppose that ﬁle A.h includes both B.h and C.h. File
+B.h includes C.h too.
+• Every ﬁle that includes A.h will contain two versions of C.h inside and it will inevitably lead to
+compilation error due to the repeated deﬁnition of the same classes/functions.
+• To avoid it we tell the compiler to include each .h once per source ﬁle using the #ifndef directive.
+#pragma once #ifndef FILENAME_H_
+#define FILENAME_H_ A.h
+code
+code
+B.h C.h
+#endif
+Dynamic and Static Binding
+• All methods in java are subject to dynamic binding
+• The C++ methods are not subject to dynamic bindings. It is possible to enable
+dynamic binding for a particular method if the method prototype is preceded by
+virtual.
+• Example: virtual void someMethod(int a);
+Every time a virtual function is called, the run-time environment must check
+the dynamic type of the interested object and ﬁnd the correct method to
+call. With static binding the compiler can decide the method to call at
+compile time.
+Creating Objects - Stack
+• A new object can be created in the same way as a variable
+• In this case the object is allocated on the stack
+• Suppose that we deﬁned a class Point, with two standard constructors. The ﬁrst is the default
+constructor that does not accept any parameter, the second accepts a pair of ﬂoat numbers. An
+object can be created with:
+• Point p; <— No parameters, no parenthesis (Point p(); is wrong!)
+• Point p(2.0,3.0); <— The parenthesis are required if the constructor has one or more parameters
+The object will be destroyed when the variable p goes out of scope.
+Creating Objects - Heap
+• A new object can be created with the operator new
+• In this case the object is allocated on the heap. Suppose that we deﬁned a class Point,
+with two standard constructors. The ﬁrst is the default constructor that does not accept
+any parameter, the second accepts a pair of ﬂoat numbers. An object can be created with:
+• Point* p = new Point; <— No parameters, parenthesis optional (Point* p = new Point();
+is ok)
+• Point* p = new Point(2.0,3.0);
+The object will NOT be destroyed when the variable p goes out of scope. It
+must be manually deallocated using the operator delete.
+Heap vs Stack
+Stack Heap
+• The deallocation is automatic, • The deallocation is manual, the
+cannot be used if the object user has control over the
+must survive outside the scope deallocation of the object.
+of the variable.
+• Memory leaks happen in this way!
+• Memory leaks cannot happen
+• ”Slow“, to be used with care, in
+• ”Fast“, to be used when it is particular if you allocate a lot of
+possible. small objects.
+Constructor and Destructor
+• As in Java every class must have a constructor. It is deﬁned in the same
+way as a method, but with the name equal to the class name and no
+return type
+• It is possible to provide more than one constructor for a single class, but
+their prototypes must be different
+• A C++ class must also have a destructor, that it is called when the class is
+destroyed. This can happens when an object on stack goes out of scope,
+or when an object on the heap is deleted with the delete keyword
+Example - Don’t do it!
+class PointPair
+{
+public:
+PointPair() { init(); }
+PointPair(Point* xp, Point* yp) {
+p1=xp; p2=yp; }
+virtual ~PointPair() { delete p1; delete p2; }
+void init()
+{ p1 = new Point; p2 = new Point; }
+Point* p1;
+Point* p2;
+};
+Example - Fixed
+class PointPair
+{
+public:
+PointPair() { init(); }
+PointPair(Point* xp, Point* yp) {
+init(); *p1=*xp; *p2=*yp; }
+virtual ~PointPair() { delete p1; delete p2; }
+void init()
+{ p1 = new Point; p2 = new Point; }
+Point* p1;
+Point* p2;
+};
+Public and Private Inheritance
+class point3D : public point
+{
+public:
+float z;
+point3D(float x0, float y0, float z0) : point(x0,y0)
+{ z = z0; }
+};
+• C++ uses ”:“ to separate the name of the class from the list of its parent classes
+• The same syntax is used to call the constructor of the parent class (line 5 and 6)
+• The public keyword (line 1) before the class point, indicates that the (public) methods of point will
+become public in point3D
+• It is possible to reduce the visibility of the inherited methods/variables changing public in private
+C++ Templates
+• C++ supports generics. The syntax is similar to the one used in java
+generics but they are implemented differently
+• In java a generic class is compiled independently of the parameters, and
+the run-time environment takes care of the required type conversions at
+run time
+• In C++ for every set of parameters, the class is recompiled. The gain in
+speed achieved by the C++ generics is due to the reduction of work for
+the runtime environment. The drawback is the increase in size of the ﬁnal
+executable.
+C++ Templates
+template<class T>
+class Pair
+• Both the prototype and the {
+implementation of a template private:
+T f; T s;
+class must be placed inside the public:
+inline T& first()
+header ﬁle! Elsewhere the { return f; }
+compiler is not able to ﬁnd the inline T& second()
+source code necessary to { return s; }
+};
+recompile the class at every ------------------
+Pair<double> p1;
+instantiation. p1.first() = 5.6;
+double d = p1.first();
+Operator Overloading
+• The operator overloading is a technique that allows to call a
+predeﬁned function using the notation assigned to a standard
+operator.
+• In C++ it is only possible to overload the operators already available
+(+, -, *, =, etc.), it is not possible to deﬁne new operators
+• Eigen uses operator overloading extensively!
+Standard Template Library
+• STL is a library included in the C++ standard.
+• Check for a manual.
+• We will look only at the basic dynamic data structures, please take a
+look at the documentation to avoid to waste time rewriting stuff
+already available.
+• Most of the classes in STL are based on templates to specify the type
+of managed data.
+Iterators
+• Similarly to java, the containers in STL are based on the concept of an iterator.
+• An iterator behave exactly as a pointer of the same type of the underlining container.
+• Suppose we deﬁned a list of integer (class list<int> as we will see later), the corresponding
+iterator type will be list<int>::iterator.
+• An iterator must be created with the methods begin() and rbegin() present in every
+container. They return an iterator pointing the ﬁrst and the last element, respectively.
+• There are two special iterators, container.end() and container.rend(), that points to an
+element after the last and an element before the ﬁrst, respectively.
+• They are used to check when we reach the end or the beginning of our container.
+Iterator’s Operators
+• An iterator it implements the following operators:
+• ++it ti++ (what to use in a context where their behavior is the same?)
+• --it it-- (not supported by all iterators)
+• *it (read or edit the pointed item)
+• it->method() (equivalent to (*it).method())
+• it == it2 (check if the two iterators point to the same element)
+• it != it2 (check if the two iterators point to different elements)
+• it = it + x (x is an integer, move the iterator forward of x elements)
+• it = it - x (x is an integer, move the iterator backward of x elements)
+Vectors
+• A vector is a dynamic array. Use it in any case you need an array, the overhead in respect to a c array is
+negligible. The vector class is a template, it must be initialized with the type of the contained elements.
+• #include <vector> <— header ﬁle containing the deﬁnition
+• using namespace std; <— vector is in the std namespace vector<int>
+• vector<int> v; <— it creates a container of integers
+• vector<int*> v; <— it creates a container of pointers to integers
+• Useful methods and operators, we assume that vec is a vector:
+• vec.push_back(item) - it inserts item at the end of the vector, if no space is available the entire
+array is reallocated and expanded to make room for the new item
+• vec.erase(iterator) - it remove the item pointed by iterator (warning, the array must be
+reallocated if the elements removed is not the last)
+• vec[i] - ith element (starts from 0!)
+• vec.resize(i) - it resizes the vector to size i
+Lists
+• A C++ list is a double linked list. The list class is a template, it must be initialized with the type of the
+contained elements.
+• #include <list> <— header ﬁle containing the deﬁnition
+• using namespace std; <— list is in the std namespace
+• list<int> l; <— it creates a container of integers
+• list<int*> l; <— it creates a container of pointers to integers
+• Useful methods and operators, we assume that lis is a list:
+• lis.push_back(item) - it inserts item at the end
+• lis.push_front(item) - it inserts item at the beginning
+• lis.erase(iterator) - it removes the item pointed by iterator
+• list.front() - ﬁrst element
+• list.back() - last element
+• lis.clear() - it removes all elements
+Example
+#include <list>
+list<int> li;
+list<int>::iterator it;
+li.push_back(5); li.push_back(6); li.push_back(7); ...
+for(it = li.begin(); it != li.end(); ++li)
+{
+int& temp = *it;
+// do something with temp
+}
+Assignment 1
+• Let’s take a look at the provided code and at the assignment
+description
+References
+• Thinking in C++ second edition - Bruce Eckel http://
+• Wikipedia
+• Cpp Reference
+• Cmake
+----------------------------------------------------------------
+9CHCK
+----------------------------------------------------------------
+Images
+Images
+By The original uploader was Darth Stabro at English Wikipedia - Transferred from en.wikipedia to Commons by Pbroks13 using CommonsHelper., CC BY-SA 3.0, ?
+curid=15789788
+Raster Devices
+• Output • Input
+• 2D: Display (LCD,LED) • 2D Array: digital camera
+• 1D: Hardcopy (ink-jet, dye • 1D Array: scanner
+sublimation)
+Bayesian Color-Filter
+By en:User:Cburnett - Own workThis vector image was created with Inkscape., CC BY-SA 3.0,
+Pixel Coordinates - Raster Image
+0,3
+Be Careful:
+Y is flipped
+in some APIs
+0,0 3,0 y=-0.5
+x=-0.5
+Pixel Values (Framebuffer format)
+• 1-bit greyscale - text
+• 8-bit RGB (24 bits) - web and email
+• 8-bit RGBA (32 bits) - alpha channel, see next slide
+• 16/24/32bits - high accuracy for photography and HDR
+Monitors Intensity, Gamma Correction
+• What is the minimal and maximal light intensity?
+• The intermediate intensities are different for each person, and it is
+non-linear
+• Monitors needs to be calibrated for a certain viewer, using a
+procedure called “Gamma Correction”
+• The rule is simple: displayed intensity = (max intensity) * a
+Pixel Value
+Gamma Correction
+• Find the neutral gray: 0.5=a
+• Compute  = ln0.5
+lna
+• The colors will not be uniform on normal screens, one of
+the major factor affecting the cost of screens is their
+ability to be consistent on all pixels!
+By X-romix 10:00, 7 June 2008 (UTC), Updated by --Rubybrian (talk) 14:25, 14 September 2010 (UTC); Photographer: Toni Frissell - This file was derived from:  Weeki Wachee spring 10079u.jpg, GFDL,
+RGB vs CMYK colors
+• RGB is additive • CMYK is subtractive
+By BenRG and cmglee - , CC BY-SA 3.0,
+Calibration is very important!
+Alpha Compositing
+↵=1
+• A way to represent transparency
+• The pixels of an image are blended
+linearly with the image below
+• c = ↵cnew +(1↵)cold ↵=0
+RGBA is very common, and you will use it often!
+Image Formats
+• Lossy:
+• jpeg - compact, introduces artifacts
+• Lossless:
+• png - common for web applications
+• ppm - very simple, not compressed
+• tiff - mostly scientific use
+References
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapters 1,2,3
+----------------------------------------------------------------
+10CHCK
+----------------------------------------------------------------
+Ray Tracing
+Basic Raytracing
+1. Generation of Rays (one per pixel)
+2. Intersection with objects in the scene
+3. Shading (computation of the color of the pixel)
+By Henrik - Own work, GFDL,
+Projection - Parallel
+Direction of projection
+Commonly used in modeling tools
+Perspective Projection
+Each ray has a different direction!
+Two and Three Point Perspectives
+1. Compute Rays
+v
+e u
+v w
+u
+e
+p
+e is the origin of the reference system p=e+uu+vv+ww
+p is the center of the pixel
+Orthographic
+v w
+u Direction of projection
+e
+v v
+e u w
+u p
+• For the ray assigned to pixel p:
+• Origin: p
+• Direction: -w
+Perspective
+v w
+u
+e
+v v
+e u w
+u e p
+• For the ray assigned to pixel p:
+• Origin: e
+• Direction: p - e
+Basic Raytracing
+1. Generation of rays (one per pixel)
+2. Intersection with objects in the scene
+3. Shading (computation of the color of the pixel)
+By Henrik - Own work, GFDL,
+Intersections
+• This is an expensive operation
+• There is a large literature, a good overview is here: http://
+• We will study two very useful cases:
+• Spheres
+• Triangles (by combining many triangles you can approximate
+complex surfaces)
+Ray-Sphere Intersection
+• We have a ray in explicit form:
+p(t)=e+td
+• and a sphere of radius r and center c in implicit form
+f(p)=(pc)·(pc)R2=0
+• To find the intersection we need to find the solutions of
+f(p(t)) = 0
+2. Ray-Triangle Intersection
+• Explicit parametrization of a triangle with vertices a,b,c:
+f(u,v)=a+u(ba)+v(ca)
+• Explicit ray:
+p(t)=e+td
+• The ray intersects the triangle if a t,u,v exist s.t.:
+f(u,v)=p(t)
+t>0 0  u,v u+v1
+Multiple Objects
+• It is simple, intersect it with all of them and only keep the closest
+intersection
+• To speed up computation, you can use a spatial data structure to
+prune the number of collisions that you need to check
+Basic Raytracing
+1. Generation of Rays (one per pixel)
+2. Intersection with objects in the scene
+3. Shading (computation of the color of the pixel)
+By Henrik - Own work, GFDL,
+Shading
+• Modeling accurately the behavior of light is difficult and computationally
+expensive
+• We will use an approximation that is simple and efficient. It is divided in 3 parts:
+• Diffuse (Lambertian) Shading
+• Specular (Blinnn-Phong) Shading
+• Ambient Shading
+• The three terms will be summed together to obtain the final color
+Diffuse and Specular
+Copyright: Marsette Vona
+Shading Variables
+• The shading depends on the entire scene, the light can
+bounce, reflect and be absorbed by anything that it encounters
+• We will simplify it so that it depends only on: n
+• The light direction l (a unit vector pointing to the light v l
+source)
+• The view direction v (a unit vector pointing toward the
+camera)
+• The surface normal n (a vector perpendicular to the surface
+at the point of intersection)
+Diffuse Shading
+• Lambert (18th century) observed that the n ✓
+amount of energy from a light source that falls l
+on an area of surface depends on the angle of
+the surface to the light
+• To model it, we make the amount of light
+proportional to the angle between the n and l
+✓
+diffuse coefficient
+L=kdImax(0,n·l)
+intensity of the light The position of the camera is not used!
+p = 100 -> Shiny
+Specular Shading p = 1000 -> Glossy
+p > 10,000 -> Mirror
+• Specular highlights depend on the position of the viewer
+• A simple and effective model to model them has been n l
+proposed by Phong (1975) and refined by Blinn (1976) v
+• The idea is to produce a reflection that is bright if v and l
+are symmetric wrt n
+• To measure the asymmetry we measure the angle
+between h (the bisector of v and l) and n ↵ n
+h= v+l Phong exponent h l
+||v + l|| v
+L=k Imax(0,n·l)+k Imax(0,n·h)p
+d s
+specular coefficient
+Diffuse and Specular
+Copyright: Marsette Vona
+Final Shading Equation
+L=k I +k Imax(0,n·l)+k Imax(0,n·h)p
+a a d s
+Ambient Diffuse Specular
+If you have multiple lights, simply sum them up all together.
+Note that the ambience light should be considered only once.
+Shadows
+• The blue point does not receive light,
+while the orange one does
+• To check it, cast a ray from each point
+to the light — if you intersect
+something (before reaching the light)
+then it is in a shadow area, and the
+light should not contribute to its color
+• These rays are usually called shadow
+rays The shadow rays should be casted an epsilon away from the source
+Ideal Reflections Limit the recursion depth!
+• It is easy to add ideal n d
+reflections (also called r ✓ ✓
+mirror reflections) to your p
+ray tracing program
+r = d2(d·n)n
+color c = c + kmraycolor(p+sr),✏,1)
+specular color
+By Prabhu B - , CC BY 2.0,
+A simple ray-tracing program
+• The source code of Assignment 2 is a simple ray tracer
+Conclusions
+• Ray tracing is an effective way to render images
+• Specular reflection and Shadows are straightforward to implement
+• It is ubiquitously used even in rasterization pipelines to “pick”
+objects
+References
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapters 4, 10, 13
+----------------------------------------------------------------
+11CHCK
+----------------------------------------------------------------
+Procedural Synthesis
+Acknowledgment: Sylvain Lefebvre, Jeremie Dumas
+Procedural Content Generation
+Inigo Quilez ()
+Procedural Noise
+We start with noise functions
+• Goal: create realistic “textures” at inexpensive costs.
+F(noise)
+colors,
+normals,
+roughness…
+Procedural noise Procedural texture
+[Perlin 1985]
+What is a good noise function?
+Perlin noise [85]
+Noise Requirements
+• We want noise with controllable appearance
+• Other desirable noise properties:
+• Compact
+• Continuous
+• Non-periodic
+• Fast
+• Applied to 3D objects: map to surface or 3D function
+Perlin Noise
+• Based on a regular lattice, with a 2D random
+vector v defined on every corner
+• Algorithm:
+• Given a point p in 2D find the 4 lattice
+corners c , c , c , c
+1 2 3 4
+• .
+Compute v(c) (p-c) for every corner
+i i
+• Return the bilinear interpolation of the dot
+products evaluated at p
+// Function to linearly interpolate between a0 and a1
+// Weight w should be in the range [0.0, 1.0]
+float lerp(float a0, float a1, float w) {
+return (1.0 - w)*a0 + w*a1;
+// as an alternative, this slightly faster equivalent formula can be used:
+// return a0 + w*(a1 - a0);
+}
+// Computes the dot product of the distance and gradient vectors.
+float dotGridGradient(int ix, int iy, float x, float y) {
+// Precomputed (or otherwise) gradient vectors at each grid node
+extern float Gradient[IYMAX][IXMAX][2];
+// Compute the distance vector
+float dx = x - (float)ix;
+float dy = y - (float)iy;
+// Compute the dot-product
+return (dx*Gradient[iy][ix][0] + dy*Gradient[iy][ix][1]);
+}
+// Compute Perlin noise at coordinates x, y
+float perlin(float x, float y) {
+// Determine grid cell coordinates
+int x0 = int(x);
+int x1 = x0 + 1;
+int y0 = int(y);
+int y1 = y0 + 1;
+// Determine interpolation weights
+// Could also use higher order polynomial/s-curve here
+float sx = x - (float)x0;
+float sy = y - (float)y0;
+// Interpolate between grid point gradients
+float n0, n1, ix0, ix1, value;
+n0 = dotGridGradient(x0, y0, x, y);
+n1 = dotGridGradient(x1, y0, x, y);
+ix0 = lerp(n0, n1, sx);
+n0 = dotGridGradient(x0, y1, x, y);
+n1 = dotGridGradient(x1, y1, x, y);
+ix1 = lerp(n0, n1, sx);
+value = lerp(ix0, ix1, sy);
+return value;
+}
+Combine x 1 and add colors!
+x 0.5
+42 +=
+seed
+x 0.25
+color = f(x,y,z)
+Color Maps
+From:
+Why are Procedural Textures Popular?
+• No need to store them
+• Reduce GPU transfer for rasterization
+• Reduce scene size for raytracing
+• They can be evaluated at any point
+• computation-bound instead of memory-bound
+• Infinite resolution (similar to vector graphics)
+Solid Textures and Hypertextures
+Cellular Noise [Worley 1996] Hypertextures [Perlin 1989]
+Implicit Modeling
+Acknowledgement: Marco Tarini
+distance field iso-surface
+distance field iso-surface
+composition operator
+s
+a
+m
+p
+l
+e
+_
+o
+u
+t
+composition operator
+composition operator
+union blend contact & bulge
+[Sabin 1968] [Blinn 1982] [Cani 1993]
+[Ricci 1973]
+[Gourmel et al. 2013]
+composition operator
+[Gourmel et al. 2013]
+composition operator
+Implicit Skinning [Vaillant et al. 2013]
+[Vaillant et al. 2014]
+composition operator
+[Vaillant et al. 2014]
+composition operator
+Implicit Model
+• All points where f(p) =0
+f : R3 → R
+• It directly defines an inside and outside
+• f (p) < 0 <==> p inside
+• f (p) > 0 <==> p outside
+• f (p) = 0 <==> p on the surface
+• By construction, it defines a closed, watertight model.
+Sphere
+⎛ x⎞
+f ⎜ y⎟ = x2 + y2 + z2 − R2
+⎜ ⎟
+⎜ z ⎟ z
+⎝ ⎠
+x y
+Categories
+• Algebraic surfaces: f () is a polynomial
+• Quadratic surfaces : f () degree is 2,
+• aka «quadrics»
+• important class!
+• simple equations, good expressive power
+• e.g. perfect spheres
+• Cubic surfaces: f () degree is 3
+• Higher-Order
+Implicit Modeling: Pros and Cons?
+Pros:
+• Compact
+• CSG! (see later)
+• Good model for both fluids and solids
+• Easy to render with ray marching
+Cons:
+• Difficult to render for rasterization-based pipelines
+Implicit Solid Modeling
+• Let A and B be two solid objects described implicitly by implicit
+functions f and f
+A B
+• We can then define:
+• complement: - f
+A A
+• intersection: max( f , f )
+A B
+• union: min( f , f ) B
+A B
+• subtraction: max( f , - f )
+A B
+Constructive Solid Geometry (CSG)
+/
+Geometric Solid Modelling
+max
+-
+max min
+f1 f2 f3 min
+f4 f5
+Constructive Solid Geometry
+CSG
+Modeling Complex Scenes
+4096 bytes
+Rendering Implicits
+Ray Marching
+Acknowledgement: Jamie Wong
+Ray Marching
+• Similar to ray tracing
+• Since the implicit function might not
+be quadratic, we cannot find the
+intersection explicitly as we did for
+triangles and spheres
+Image from Wikipedia
+Algorithm 1
+• The simplest algorithm resembles
+gradient descent
+• You proceed on the ray by a fixed
+amount
+• You start to do bisection search if you
+get closer than a given distance to
+the surface
+Image From:
+Algorithm 2: “Sphere Tracing”
+• Instead of taking a constant
+step, you check the closest
+point on the surface, and you
+move by that amount
+• Can be done exactly with a
+distance field
+• It can be a conservative
+estimate for more general
+cases
+Tutorials and Examples
+• shadertoy.com
+• -
+functions/#the-raymarching-algorithm
+• -
+is-ray-marching-is-sphere-tracing-the-same-thing
+Rendering Implicits
+Explicit Meshing
+Extracting the Surface
+• Wish to compute a manifold mesh of the level set
+F(x) = 0 
+surface
+F(x) < 0 
+inside
+.com
+F(x) > 0 
+outside om:
+.farfieldtechnology
+Image frwww
+Sample the SDF
+Sample the SDF
+Tessellation
+• Want to approximate an implicit surface with a mesh
+• Can‘t explicitly compute all the roots
+• Sampling the level set is difficult (root finding)
+• Solution: find approximate roots by trapping the implicit surface in a grid
+(lattice)
++ -
+- -
+Marching Squares
+• 16 different configurations in 2D
+• 4 equivalence classes (up to rotational and reflection symmetry +
+complement)
+… …
+Tessellation in 2D
+• 4 equivalence classes (up to rotational and reflection symmetry +
+complement)
+?
+Tessellation in 2D
+• Case 4 is ambiguous:
+• Always pick consistently to avoid problems with the resulting mesh
+3D: Marching Cubes
+Layer k+1
+Layer k
+Marching Cubes
+• Marching Cubes (Lorensen and Cline 1987)
+1. Load 4 layers of the grid
+into memory
+2. Create a cube whose
+vertices lie on the two Layer k+1
+middle layers
+Layer k
+3. Classify the vertices of
+the cube according to the
+implicit function (inside,
+outside or on the surface)
+Marching Cubes
+4. Compute case index. We have 28= 256 cases (0/1 for each of the eight
+vertices) – can store as 8 bit (1 byte) index.
+v v
+8 e 7
+7
+e e e
+8 6 6
+v e v v
+5 5 6 e5 6
+e
+e 12
+11
+e e10 e e
+9 v 9 10
+4 e v
+3 3
+e e
+4 2 e
+v v 4
+1 e v 1
+1 2 e1
+index = v v v v v v v v index = 0 0 1 0 0 0 0 1 = 33
+1 2 3 4 5 6 7 8
+Marching Cubes
+• Unique cases (by rotation, reflection and complement)
+Tessellation
+3D – Marching Cubes
+5. Using the case index, retrieve the connectivity in the look-up table
+• Example: the entry for index 33 in the look-up table indicates that the cut
+edges are e ; e ; e ; e ; e and e ; the output triangles are (e ; e ; e ) and
+1 4 5 6 9 10 1 9 4
+(e ; e ; e ).
+5 10 6
+e6
+e v
+5 6
+e e
+9 10
+e4 index = 0 0 1 0 0 0 0 1 = 33
+v
+1 e
+1
+Marching Cubes
+6. Compute the position of the cut vertices by linear interpolation:
+7. Move to the next cube
+Marching Cubes – Problems
+• Have to make consistent choices for neighboring cubes –
+otherwise get holes
+–
+3 3
+Marching Cubes – Problems
+• Resolving ambiguities
+Ambiguity No Ambiguity
+Marching Cubes – Problems
+• Grid not adaptive
+• Many polygons required to represent small features
+Images from: “Dual Marching Cubes: Primal Contouring of Dual Grids”
+by Schaeffer et al.
+Marching Cubes – Problems
+Implicit Modeling
+In Additive Manufacturing
+IceSL
+Tilings
+[Henry Segerman]
+By-Example
+Texture Synthesis
+Texture synthesis from example
+Tiling Synthesis Tiling Synthesis
+Basic Idea
+Example Image
+Random Initial Guess Final Result
+Measuring Similarity
+• Neighborhood Matching:
+Exemplar
+Texture being synthesized
+What is a good exemplar?
+✔ Stochastic Image ✘ Structured Image
+Results
+Surface Texture Synthesis
+Exemplar
+By-Example Solid Textures
+Solid Texture Synthesis [Kopf07] Lazy Solid Texture Synthesis [Dong08]
+By-Example Solid Textures
+Lazy Solid Texture Synthesis
+[Dong et al. 2008]
+References
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapter 22
+State of the Art in Example-based Texture Synthesis
+Li-Yi Wei, Sylvain Lefebvre, Vivek Kwatra, Greg Turk
+Eurographics 2009 - State of the Art Reports 2009
+State of the Art in Procedural Noise Functions
+Ares Lagae, Sylvain Lefebvre, Rob Cook, Tony DeRose, George Drettakis, D.S. Ebert, J.P. Lewis, Ken Perlin, Matthias Zwicker
+Eurographics 2010 - State of the Art Reports 2010
+----------------------------------------------------------------
+12CHCK
+----------------------------------------------------------------
+Spatial Data Structures
+Acknowledgement: Marco Tarini
+Types of Queries
+• Graphic applications often require spatial queries
+• Find the k points closer to a specific point p (k-Nearest Neighbours, knn)
+• Is object X intersection with object Y? (Intersection)
+• What is the volume of the intersection between two objects?
+• Brute force search is expensive. Instead, you can solve these queries with an
+initial preprocessing that creates a data structure which supports efficient queries
+• The data structure to use is application-specific
+Two Main Ideas
+1. You can explicitly index the space itself (Spatial Index)
+2. You can “sort” the primitives in the scene, which implicitly induces a
+partition of the space (Bounding Volume Hierarchies)
+Spatial Indexing Structures
+Spatial Indexing Structures
+• Data structures to accelerate queries of the kind:
+“I’m here. Which object is around me?”
+• Tasks:
+• (1) construction / update
+• for static parts of the scene, a preprocessing.
+• for moving parts of the scene, an update.
+• (2) access / usage
+• as fast as possible
+• The most common structures are:
+• Regular Grid
+• kD-Tree
+• Oct-Tree/Quad-Tree
+• BSP Tree
+Regular Grid (aka lattice)
+a
+b
+c
+d
+a b e
+c d e f f
+g
+g h i j h
+i
+k l j
+k
+m n o p l
+q m
+n
+r o
+p
+s q
+r
+s
+Image Copyright: Marco Tarini
+Regular Grid (or: lattice)
+• Array 3D of cells (same size)
+• each cell: a list of pointers to colliding objects
+• Indexing function:
+• Point3D \ cell index, (constant time!)
+• Construction: (“scatter” approach)
+• for each object B[ i ]
+• find the cells C[ j ] which it touches
+• add a pointer in C[ j ] to B[ i ]
+• Queries: (“gather” approach)
+• given a point to test p,
+find cell C[ j ], test all objects linked to it
+• Problem: cell size
+• too small: memory occupancy too large
+quadratic with inverse of cell size!
+• too big: too many objects in one cell
+• sometimes, no cell size is good enough
+kD-tree A
+B C
+DD EE FF G
+D H HH I
+B A F C G J KK
+NLO L MM
+J
+M
+E I NN OO
+K
+Image Copyright: Marco Tarini
+kD-trees
+• Hierarchical structure: a tree
+• each node: a subpart of the 3D space
+• root: all the world
+• child nodes: partitions of the father
+• objects linked to leaves
+• kD-tree:
+• binary tree
+• each node: split over one dimension (in 3D: X,Y,Z)
+• variant:
+• each node optimizes (and stores) which dimension, or
+• always same order: e.g. X then Y then Z
+• variant:
+• each node optimizes the split point, or
+• always in the middle
+Quad-Tree (2D)
+Image Copyright: Marco Tarini
+Oc-Tree (3D)
+Quad trees (in 2D)
+Oct trees (in 3D)
+• Similar to kD-trees, but:
+• tree: branching factor: 4 (2D) or 8 (3D)
+• each node: splits into all dimensions at once,
+(in the middle)
+• Construction (just as kD-trees):
+• continue splitting until a end nodes has few enough objects
+(or limit level reached)
+BSP-tree
+Binary Spatial Partitioning tree
+Image Copyright: Marco Tarini
+BSP-trees for
+the Concave Polyhedron proxy
+Image Copyright: Marco Tarini
+BSP-trees for Inside-Outside Test
+E A
+B OUT B
+F
+C E
+C
+OUT D OUT F
+D A
+OUT IN OUT IN
+Image Copyright: Marco Tarini
+BSP-tree
+Binary Spatial Partitioning tree
+• Another variant
+• a binary tree (like the kD-tree)
+• root = all scene (like kD-tree)
+• but, each node is split by an arbitrary plane
+• (or a line, in 2D)
+• plane is stored at node, as (nx, ny, nz, k)
+• planes can be optimized for a given scene
+• e.g. to go for a 50%-50% object split at each node
+• Another use: to test (Generic) Polyhedron proxy:
+• note: with planes defined in its object space
+• each leaf: inside or outside
+• (no need to store them: left-child = in, right-child = out)
+• tree precomputed for a given object
+Primitive Sorting Structures
+Bounding Volume Hierarchies (BVH)
+Image Copyright: Marco Tarini
+Bounding Volume Hierarchies (BVH)
+B
+C
+A D E F
+A B C D
+F
+E
+Image Copyright: Marco Tarini
+Bounding Volume Hierarchies (BVH)
+M
+J M
+G B J K
+H C
+A D G H E F
+A B C D
+F
+E K
+Image Copyright: Marco Tarini
+BVH
+Bounding Volume Hierarchy
+• Idea: use the scene hierarchy given by the scene graph
+• (instead of a spatial derived one)
+• associate a Bounding Volume to each node
+• rule: a BV of a node bounds all objects in the subtree
+• construction / update is fast
+• bottom-up: recursive
+• using it:
+• top-down: visit
+• note: not a single root to leaf path
+• may need to follow multiple children of a node
+(in a BSP-tree: only one)
+Spatial Indexing Structures
+• Regular Grid
+• the most parallelizable (to update / construct / use)
+• constant time access (best!)
+• quadratic / cubic space (2D, 3D)
+• kD-tree, Oct-tree, Quad-tree
+• compact
+• simple
+• non constant accessing time (still logarithmic on average)
+• BSP-tree
+• optimized splits! best performance when accessed
+• optimized splits! more complex construction / update
+• ideal for static parts of the scene
+• (also, used for generic polyhedron inside/outside test)
+• BVH
+• simplest construction
+• non necessarily very efficient to access
+• may need to traverse multiple children
+• if you do not have a scene-graph you need to create one
+• ideal for dynamic parts of the scene
+Intersection Acceleration Data
+Structures
+Collision Detection
+• It is easy to do, the challenge is to do it efficiently
+• An observation:
+• most pair of objects do not intersect each other in a scene,
+collisions are rare
+• optimizing the intersections directly is important but not sufficient,
+we need to optimize the detection of non intersecting pairs (“early
+rejects”)
+Geometric Proxies
+• Idea: use a geometric proxy to approximate the objects in the scene
+Geometric Proxy
+• Extremely coarse approximation
+• Used as a:
+• Bounding Volume
+• the entire object must be contained inside
+• exact result, you need to do more work if you detect
+a collision
+• Collision Object (or “hit-box”)
+• approximation of the object
+• no need to do anything else if an approximation is ok for
+your use case
+Example: Fighting Games
+Street Fighter Alpha, CAPCOM 1995
+Extremely Common
+• Physic engine
+• collision detection
+• collision response
+• Rendering
+• view frustum culling
+• occlusion culling
+• AI
+• visibility test
+• GUI
+• picking
+Properties of Geometric Proxies
+1. How expensive are they to compute/update?
+2. How much space do you need?
+3. Are they invariant to the transformations applied on the object?
+4. How good is the approximation?
+5. How expensive are the collision queries with the other objects in the
+scene?
+Geometry Proxies: Sphere
+• Easy to compute and update
+• Compact (center, radius)
+• Very efficient collision tests
+• Can only be transformed rigidly
+• The quality of the approximation is low
+Geometry Proxies: Capsule
+• Def:
+• Sphere ==
+set of all points with dist from a point < radius
+• Capsule ==
+set of all points with dist from a segment < radius
+• i.e. a cylinder ended with two half-spheres (all same radius)
+• Stored with:
+• a segment (two end-points)
+• a radius (a scalar)
+• Popular option, compact to store, easy to construct, easy to detect
+intersections, good approximation
+Geometry Proxies: Half Space
+• Trivial, but useful
+• e.g. for a flat terrain,
+or a wall
+• Storage:
+• (nx, ny, nz, k)
+• a normal, a distance from the origin
+• Tests are trivial
+Geometry Proxies:
+Axis-Aligned Bounding Box (AABB)
+• Easy to update
+• Compact (three intervals)
+• Trivial to test
+• It can only be translated or scaled, rotations are not supported
+Geometry Proxies:
+Box
+• Similar to AABB, but not axis-
+aligned
+• More expensive to compute
+and store
+• You need intervals and a
+rotation
+• Still not a great approximation,
+but it is invariant to rotations
+and it is fast to compute and
+use
+Geometry Proxies (in 2D): Convex Polygon
+• Intersection of half-planes
+• each delimited by a line
+• Stored as:
+• a collection of (oriented) lines
+• Test:
+• a point is inside iff
+it is in each half-plane
+• Good approximation
+• Moderate complexity
+Geometry Proxies (in 3D): Convex Polyhedron
+• Intersection of half-spaces
+• Similar as previous,
+but in 3D
+• Stored as a collection
+of planes
+• Each plane is a normal + distance from origin
+• Test: inside proxy iff
+inside each half-space
+Geometry Proxies (in 3D): (General) Polyhedron
+• Luxury Hit-Boxes :)
+• The most accurate approximations
+• The most expensive tests / storage
+• Specific algorithms to test for collisions
+• requiring some preprocessing
+• and data structures (BSP-trees)
+• Creation (as meshes):
+• sometimes, with automatic simplification
+• often, hand made (low poly modelling)
+3D Meshes as Hit-Boxes
+• These are often NOT the meshes that you use for rendering
+• 2
+much lower resolution (~ O(10 ) )
+• no attributes (no uv-mapping, no col, etc)
+• closed, water-tight (inside != outside)
+• often convex only
+• can be polygonal (as long as the faces are flat)
+3D Meshes as Hit-Boxes
+mesh for rendering (in wireframe) Collision object:
+(~600 tri faces) 10 (polygonal) faces
+3D Meshes as Hit-Boxes
+mesh for rendering (in wireframe) Collision object:
+(~300 tri faces) 12 (polygonal) faces
+Geometry Proxies: Composite Hit-Boxes
+• Union of Hit-Boxes
+• inside iff inside of any sub Hit-Box
+• Flexible
+• union of convex Hit-Boxes ==> concave Hit-Box
+• shape partially defined by a sphere,
+partially by a box ==> better approximation
+• Creation: typically by hand
+• (remember: hit-boxes are usually assets)
+How To Choose The Proxy?
+• Application dependent
+• Note: # of intersection tests to be implemented quadratic wrt # of types
+supported
+VS Type A Type B Type C Point Ray
+Type A algorithm algorithm algorithm algorithm algorithm
+Type B algorithm algorithm algorithm algorithm useful,
+e.g.
+Type C algorithm algorithm algorithm for visibility
+Collision Detection Strategies
+Frame 1 Frame 2
+• Static Collision detection
+• (“a posteriori”, “discrete”)
+• approximated
+• simple + quick
+• Dynamic Collision detection
+• (“a priori”, “continuous”)
+• accurate
+• demanding ???
+Existing Implementations
+• Intel Embree - BVH Tree -
+• Nori - BVH -
+• Approximate knn -
+• Intersections -
+References
+Foundations of Multidimensional and Metric Data Structures
+Hanan Samet
+Polygon Mesh Processing
+Mario Botsch, Leif Kobbelt, Mark Pauly, Pierre Alliez, Bruno Levy
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapter 12
+----------------------------------------------------------------
+13CHCK
+----------------------------------------------------------------
+2D Transformations
+2D Linear Transformations
+• Each 2D linear map can be represented by a unique 2×2 matrix
+ ⇥  ⇥  ⇥
+x ab x
+ = ·
+y cd y
+• Concatenation of mappings corresponds to multiplication of matrices
+L (L (x)) = L L x L2 * L1 * x;
+2 1 2 1
+• Linear transformations are very common in computer graphics!
+2D Scaling
+ ⇥  ⇥  ⇥
+x s 0 x
+• Scaling = x ·
+y 0 s y
+⇧ ⌅⇤ y ⌃
+S(sx,sy) S(0.5,0.5)
+Image Copyright: Mark Pauly
+2D Rotation
+ ⇥  ⇥  ⇥
+• Rotation x = cos sin · x
+y sin cos y
+⇧ ⌅⇤ ⌃
+R() 
+R(20 )
+Special case: R(90) = 0 1
+10
+Image Copyright: Mark Pauly
+2D Shearing
+• Shear along x-axis
+ ⇥  ⇥  ⇥
+x = 1 a · x
+ H (0.5)
+y 01 y x
+⇧ ⌅⇤ ⌃
+H (a)
+x
+• Shear along y-axis
+ ⇥  ⇥  ⇥
+x 10 x
+y = b 1 · y H (0.5)
+⇧ ⌅⇤ ⌃ y
+Hy(b)
+Image Copyright: Mark Pauly
+2D Translation
+ ⇥  ⇥  ⇥
+• Translation x = x + tx
+y y ty
+ ⇥  ⇥
+• x = T(t ,t )· x
+Matrix representation? y x y y
+Image Copyright: Mark Pauly
+Affine Transformations
+• Translation is not linear, but it is affine
+• Origin is no longer a fixed point
+• Affine map = linear map + translation
+ ⇥  ⇥  ⇥  ⇥
+x ab x tx
+ = · + = Lx+t
+y cd y ty
+• Is there a matrix representation for affine transformations?
+• We would like to handle all transformations in a unified framework ->
+simpler to code and easier to optimize!
+Homogenous Coordinates
+• Add a third coordinate (w-coordinate)
+• T
+2D point = (x, y, 1)
+• T
+2D vector = (x, y, 0)
+ ⇥  ⇥  ⇥  ⇥
+x 10tx x x+tx
+⇤ ⌅ ⇤ ⌅ ⇤ ⌅ ⇤ ⌅
+y = 01t · y = y+t
+y y
+w 001 1 1
+• Matrix representation of translations
+Homogenous Coordinates
+• Valid operation if the resulting w-coordinate is 1 or 0
+• vector + vector = vector
+• point - point = vector
+• point + vector = point
+• point + point = ???
+Homogenous Coordinates
+• 3
+Geometric interpretation: 2 hyperplanes in R
+points
+vectors
+Image Copyright: Mark Pauly
+Affine Transformations
+• Affine map = linear map + translation
+ ⇥  ⇥  ⇥  ⇥
+x ab x tx
+ = · +
+y cd y ty
+• Using homogenous coordinates:
+ ⇥  ⇥  ⇥
+x abt x
+x
+⇤ ⌅ ⇤ ⌅ ⇤ ⌅
+y = cdt· y
+y
+1 001 1
+2D Transformations
+ ⇥
+s 00
+x
+⇤0 s 0⌅
+• S(s ,s )= y
+Scale x y
+001
+ ⇥
+cos sin 0
+⇤ ⌅
+• Rotation R()= sin cos 0
+001
+ ⇥
+10tx
+• ⇤ ⌅
+Translation T(t ,t )= 01ty
+x y
+001
+Concatenation of Transformations
+• Sequence of affine maps A , A , A , ...
+1 2 3
+• Concatenation by matrix multiplication
+ ⇥
+x
+A (...A(A (x))) = A ···A ·A ·⇤y⌅
+n 2 1 n 2 1
+1
+• Very important for performance!
+• Matrix multiplication not commutative, ordering is important!
+Rotation and Translation
+• Matrix multiplication is not commutative!
+• First rotation, then translation
+ T(t ,0)
+R(45 ) x
+• First translation, then rotation
+
+T(tx,0) R(45 )
+Image Copyright: Mark Pauly
+2D Rotation
+• How to rotate around a given point c?
+1. Translate c to origin
+2. Rotate
+3. Translate back
+T(c) R() T(c)
+• Matrix representation?
+T(c)·R()·T(c)
+Image Copyright: Mark Pauly
+Transform Object or Camera?
+o
+T(-1,-1) S(0.5,0.5) R(45 ) T(1,1)
+o
+T(1,1) S(2,2) R(-45 ) T(-1,-1)
+Image Copyright: Mark Pauly
+A note on transforming normals
+• If you transform a point v with a matrix M: v’ = Mv …
+• -T
+the transformed normal n’ at the point v is n’ = M n
+References
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapter 6
+----------------------------------------------------------------
+14CHCK
+----------------------------------------------------------------
+Viewing Transformations
+Viewing transformations
+World Screen
+Coordinates Modeling Camera Projection Viewport Space
+(pixels)
+Coordinate Systems
+object world camera screen
+coordinates coordinates coordinates coordinates
+Image Copyright: Mark Pauly
+Viewing Transformation
+object space camera space screen space
+model camera projection viewport
+world space canonical
+view volume
+Viewport transformation
+-1 1 screen space
+viewport
+ny
+canonical
+view volume nx
+2xscreen3 2nx/20nx132xcanonical3
+2
+4yscreen5 = 4 0 ny/2 ny154ycanonical5
+2
+1 0011
+How does it look in 3D?
+Orthographic Projection
+camera space
+y (r,t,f)
+z (l,b,n)
+x
+projection
+2 2 00r+l3
+rl rl
+6 0 2 0 t+b 7
+Morth = 6 tb tb 7
+4 002 n+f5
+nf nf
+canonical 0001
+view volume
+Camera Transformation
+1. Construct the camera reference system given:
+1. The eye position e
+2. The gaze direction g
+3. The view-up vector t
+w= g
+v w ||g||
+u u= t⇥w
+world space e ||t ⇥ w||
+camera v=w⇥u
+camera space
+Change of frame
+p=(p ,p)=o+p x+p y
+y v x y x y
+u p=(p ,p)=e+p u+p v
+p e u v u v
+o x 2px3 210ex32ux vx 032pu3 2ux vx ex32pu3
+4py5=401ey54uy vy 054pv5=4uy vy ey54pv5
+1 001 0011 0011
+   1
+uve uve
+pxy = puv puv = 001 pxy
+001
+Can you write it directly without the inverse?
+Camera Transformation
+1. Construct the camera reference system given:
+1. The eye position e
+2. The gaze direction g
+3. The view-up vector t
+w= g
+v w ||g||
+u u= t⇥w
+world space e ||t ⇥ w||
+camera v=w⇥u
+2. Construct the unique transformations that converts world coordinates into
+camera coordinates
+ 1
+M = uvwe
+cam 0001
+camera space
+Viewing Transformation
+object space camera space screen space
+model camera projection viewport
+world space canonical
+view volume
+Algorithm
+Mmodel
+• Construct Viewport Matrix Mvp
+• Construct Projection Matrix Morth
+Mcam
+• Construct Camera Matrix Mcam
+•
+M=MvpMorthMcam
+• For each model Mfinal M
+orth
+• Construct Model Matrix Mmodel
+•
+M =MM
+final model
+• For every point p in each primitive of the model Mvp
+•
+p =M p
+final final
+• Rasterize the model
+References
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapter 7
+Rasterization
+Image Copyright: Andrea Tagliasacchi
+2D Canvas
+(1.0, 1.0) (width-1, height-1)
+canvas (0, 0) pixel grid
+(-1.0, -1.0)
+Image Copyright: Andrea Tagliasacchi
+2D Canvas
+(1.0, 1.0) (width-1, height-1)
+canvas (0, 0) pixel grid
+(-1.0, -1.0)
+Image Copyright: Andrea Tagliasacchi
+Implicit Geometry Representation
+• Define a curve as zero set of 2D implicit function
+• F(x,y) = 0 → on curve
+• F(x,y) < 0 → inside curve
+• F(x,y) > 0 → outside curve
+• Example: Circle with center (c , c ) and radius r
+x y
+F(x,y)=(xc )2+(yc )2r2
+x y
+Implicit Geometry Representation
+• Define a curve as zero set of 2D implicit function
+• F(x,y) = 0 → on curve
+• F(x,y) < 0 → inside curve
+• F(x,y) > 0 → outside curve
+By Ag2gaeh - Own work, CC BY-SA 4.0, https://
+commons.wikimedia.org/w/index.php?curid=45004240
+Implicit Rasterization
+for all pixels (i,j)
+(x,y) = map_to_canvas (i,j)
+if F(x,y) < 0
+set_pixel (i,j, color)
+Barycentric Interpolation
+• Barycentric coordinates:
+• p = αa + βb + γc with α + β + γ = 1
+c
+p
+b
+a
+Barycentric Interpolation
+c
+• Barycentric coordinates:
+• p = αa + βb + γc with α + β + γ = 1 p
+b
+• Unique for non-collinear a,b,c a
+2 ax bx cx 3 2 ↵ 3 2 px 3
+4 a b c 5·4  5 = 4 p 5
+y y y y
+111  1
+Barycentric Interpolation
+• Barycentric coordinates:
+• p = αa + βb + γc with α + β + γ = 1
+• Unique for non-collinear a,b,c
+c
+• Ratio of triangle areas
+↵(p)=area(p,b,c)
+area(a,b,c) p
+(p)=area(p,c,a) b
+area(a,b,c) a
+(p)=area(p,a,b)
+area(a,b,c)
+Barycentric Interpolation
+• Barycentric coordinates:
+• p = αa + βb + γc with α + β + γ = 1
+• Unique for non-collinear a,b,c
+• Ratio of triangle areas
+• α(p), β(p), γ(p) are linear functions
+1 1
+a c a c a c
+1
+b b b
+Barycentric Interpolation
+• Barycentric coordinates:
+• p = αa + βb + γc with α + β + γ = 1
+• Unique for non-collinear a,b,c
+• Ratio of triangle areas c
+• α(p), β(p), γ(p) are linear functions β<0 α<0
+• Gives inside/outside information α,β,γ > 0
+b
+a γ <0
+Barycentric Interpolation
+• Barycentric coordinates: C
+• p = αa + βb + γc with α + β + γ = 1
+• Unique for non-collinear a,b,c
+• Ratio of triangle areas P
+• α(p), β(p), γ(p) are linear functions B
+A
+• Gives inside/outside information
+• Use barycentric coordinates to interpolate vertex normals (or other data, e.g. colors)
+n(P)=↵·n(A)+·n(B)+·n(C)
+Color Interpolation
+Per-vertex Per-pixel
+C
+P
+B
+A
+Evaluate color on vertices, Interpolates positions and normals,
+then interpolates it then evaluate color on each pixel
+-
+part-2-the-real-time-rendering-pipeline/
+Triangle Rasterization
+• Each triangle is represented as three 2D points (x , y ), (x , y ), (x , y )
+0 0 1 1 2 2
+• Rasterization using barycentric coordinates
+x = α ∙ x + β ∙ x + γ ∙ x
+0 1 2 (x0, y0)
+y = α ∙ y + β ∙ y + γ ∙ y γ < 0 β < 0
+0 1 2
+α + β + γ = 1 (x , y ) (x, y)
+1 1 (x , y )
+α < 0 2 2
+Triangle Rasterization
+• Each triangle is represented as three 2D points
+(x , y ), (x , y ), (x , y )
+0 0 1 1 2 2
+• Rasterization using barycentric coordinates
+for all y do
+for all x do
+compute (α,β,γ) for (x,y)
+if (α ∈ [0,1] and β ∈ [0,1] and γ ∈ [0,1]
+set_pixel (x,y)
+Clipping
+• Ok if you do it brute force
+• Care is required if you are explicitly tracing the boundaries
+Objects Depth Sorting
+• To handle occlusion, you
+can sort all the objects in
+a scene by depth
+• This is not always
+possible!
+z-buffering
+• You render the image both in the
+Image and in the depth buffer, where
+you store only the depth
+• When a new fragment comes in, you
+Image Depth (z) draw it in the image only if it is closer
+• This always work and it is cheap to
+evaluate! It is the default in all graphics
+hardware
+• You still have to sort for transparency…
+z-buffer quantization and “z-fighting”
+• The z-buffer is quantized (the
+number of bits is heavily
+dependent on the hardware
+platform)
+• Two close object might be
+quantized differently, leading to
+strange artifacts, usually called
+“z-fighting”
+Super Sampling Anti-Aliasing
+• Render nxn pixels instead of one
+• Assign the average to the pixel
+c1 c2
+c1 +c2 +c3 +c4
+4
+c3 c4
+Image Copyright: Fritz Kessler
+Many different names and variants
+• SSAA (FSAA)
+• MSAA
+• CSAA MSAA
+• EQAA
+• FXAA
+• TX AA
+Copyright: tested.com (
+1194-how-to-choose-the-right-anti-aliasing-mode-for-your-
+gpu/#)
+References
+Fundamentals of Computer Graphics, Fourth Edition
+4th Edition by Steve Marschner, Peter Shirley
+Chapter 8

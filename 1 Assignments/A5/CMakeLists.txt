@@ -2,14 +2,20 @@ cmake_minimum_required(VERSION 3.1)
 project(assignment5)
 
 # Project sources
-add_executable("assignment5"
+add_executable(${PROJECT_NAME}
 	src/main.cpp
 	src/raster.h
 	src/raster.cpp
 )
 
 # Include Eigen for linear algebra
-target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../ext/eigen" "${CMAKE_CURRENT_SOURCE_DIR}/../ext/gif-h" "${CMAKE_CURRENT_SOURCE_DIR}/../ext/stb")
+message("Current source directory: ${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
+    "${CMAKE_CURRENT_SOURCE_DIR}/../ext/eigen"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../ext/gif-h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../ext/stb"
+)
+
 
 # Use C++11 version of the standard
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON)

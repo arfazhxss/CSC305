@@ -1,0 +1,4 @@
+/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A5/build/CMakeFiles/assignment5.dir
+/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A5/build/CMakeFiles/examples.dir
+/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A5/build/CMakeFiles/edit_cache.dir
+/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A5/build/CMakeFiles/rebuild_cache.dir

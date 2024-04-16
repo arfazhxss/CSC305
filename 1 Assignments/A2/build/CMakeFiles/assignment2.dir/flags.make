@@ -4,9 +4,9 @@
 # compile CXX with /Library/Developer/CommandLineTools/usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -isystem "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/../ext/eigen" -isystem "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/../ext/stb" -isystem "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/../ext/gif-h"
+CXX_INCLUDES = -isystem "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/../ext/eigen" -isystem "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/../ext/stb" -isystem "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/../ext/gif-h"
 
-CXX_FLAGSarm64 = -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk
+CXX_FLAGSarm64 = -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk
 
-CXX_FLAGS = -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk
+CXX_FLAGS = -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk
 

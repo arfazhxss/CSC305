@@ -21,10 +21,10 @@ void raytrace_sphere()
     const Vector3d cameraOrigin(0, 0, 3);
     const Vector3d camera_view_direction(0, 0, -1);
 
-    // The camera is orthographic, 
-    // pointing in the direction -z and 
+    // The camera is orthographic,
+    // pointing in the direction -z and
     // covering the unit square (-1,1) in x and y
-    // 
+    //
     const Vector3d image_origin(-1, 1, 1);
     const Vector3d x_displacement(2.0 / C.cols(), 0, 0);
     const Vector3d y_displacement(0, -2.0 / C.rows(), 0);
@@ -44,7 +44,7 @@ void raytrace_sphere()
             // Intersect with the sphere
             // NOTE: this is a special case of a sphere centered in the origin and for orthographic rays aligned with the z axis
             Vector2d ray_on_xy(rayOrigin(0), rayOrigin(1));
-            const double sphereRadius = 0.9;
+            const double sphereRadius = 0.7;
 
             if (ray_on_xy.norm() < sphereRadius)
             {
@@ -80,11 +80,11 @@ void raytrace_parallelogram()
     const Vector3d y_displacement(0, -2.0 / C.rows(), 0);
 
     // TODO: Parameters of the parallelogram (position of the lower-left corner + two sides)
-    const Vector3d pgramOrigin (-0.5, -0.5, 0);
-    const Vector3d pgramU (0, 0.7, -10);
-    const Vector3d pgramV (1, 0.4, 0);
+    const Vector3d pgramOrigin(-0.5, -0.5, 0);
+    const Vector3d pgramU(0, 0.7, -10);
+    const Vector3d pgramV(1, 0.4, 0);
 
-    // Cross product between two sides  
+    // Cross product between two sides
     const Vector3d pgramNormal = pgramU.cross(pgramV);
 
     const Vector3d a = pgramOrigin;
@@ -102,7 +102,7 @@ void raytrace_parallelogram()
             const Vector3d rayOrigin = pixel_center;
             const Vector3d rayDirection = camera_view_direction;
 
-            const Vector3d e = rayOrigin; // rayOrigin = e
+            const Vector3d e = rayOrigin;             // rayOrigin = e
             const Vector3d d = camera_view_direction; // rayDirection = d
 
             // Calculate the values of u, v, and t using the equation
@@ -112,18 +112,18 @@ void raytrace_parallelogram()
             // matrixV_X_axis = (ParalellogramYWidth), (ParalellogramOriginX-RayOriginX), (CameraViewDirectionX)
             // matrixT_X_axis = (ParalellogramYWidth), (ParalellogramWidthX), (ParalellogramOriginX-RayOriginX)
             Matrix3d matrixU, matrixV, matrixT, matrixA;
-            matrixU <<  a(0) - e(0), a(0) - c(0), d(0),
-                        a(1) - e(1), a(1) - c(1), d(1),
-                        a(2) - e(2), a(2) - c(2), d(2);
-            matrixV <<  a(0) - b(0), a(0) - e(0), d(0),
-                        a(1) - b(1), a(1) - e(1), d(1),
-                        a(2) - b(2), a(2) - e(2), d(2);
-            matrixA <<  a(0) - b(0), a(0) - c(0), d(0),
-                        a(1) - b(1), a(1) - c(1), d(1),
-                        a(2) - b(2), a(2) - c(2), d(2);
-            matrixT <<  a(0) - b(0), a(0) - c(0), a(0) - e(0),
-                        a(1) - b(1), a(1) - c(1), a(1) - e(1),
-                        a(2) - b(2), a(2) - c(2), a(2) - e(2);
+            matrixU << a(0) - e(0), a(0) - c(0), d(0),
+                a(1) - e(1), a(1) - c(1), d(1),
+                a(2) - e(2), a(2) - c(2), d(2);
+            matrixV << a(0) - b(0), a(0) - e(0), d(0),
+                a(1) - b(1), a(1) - e(1), d(1),
+                a(2) - b(2), a(2) - e(2), d(2);
+            matrixA << a(0) - b(0), a(0) - c(0), d(0),
+                a(1) - b(1), a(1) - c(1), d(1),
+                a(2) - b(2), a(2) - c(2), d(2);
+            matrixT << a(0) - b(0), a(0) - c(0), a(0) - e(0),
+                a(1) - b(1), a(1) - c(1), a(1) - e(1),
+                a(2) - b(2), a(2) - c(2), a(2) - e(2);
 
             double detU = matrixU.determinant();
             double detV = matrixV.determinant();
@@ -189,18 +189,18 @@ void raytrace_perspective()
             const Vector3d d = rayDirection;
 
             Matrix3d matrixU, matrixV, matrixT, matrixA;
-            matrixU <<  a(0) - e(0), a(0) - c(0), d(0),
-                        a(1) - e(1), a(1) - c(1), d(1),
-                        a(2) - e(2), a(2) - c(2), d(2);
-            matrixV <<  a(0) - b(0), a(0) - e(0), d(0),
-                        a(1) - b(1), a(1) - e(1), d(1),
-                        a(2) - b(2), a(2) - e(2), d(2);
-            matrixA <<  a(0) - b(0), a(0) - c(0), d(0),
-                        a(1) - b(1), a(1) - c(1), d(1),
-                        a(2) - b(2), a(2) - c(2), d(2);
-            matrixT <<  a(0) - b(0), a(0) - c(0), a(0) - e(0),
-                        a(1) - b(1), a(1) - c(1), a(1) - e(1),
-                        a(2) - b(2), a(2) - c(2), a(2) - e(2);
+            matrixU << a(0) - e(0), a(0) - c(0), d(0),
+                a(1) - e(1), a(1) - c(1), d(1),
+                a(2) - e(2), a(2) - c(2), d(2);
+            matrixV << a(0) - b(0), a(0) - e(0), d(0),
+                a(1) - b(1), a(1) - e(1), d(1),
+                a(2) - b(2), a(2) - e(2), d(2);
+            matrixA << a(0) - b(0), a(0) - c(0), d(0),
+                a(1) - b(1), a(1) - c(1), d(1),
+                a(2) - b(2), a(2) - c(2), d(2);
+            matrixT << a(0) - b(0), a(0) - c(0), a(0) - e(0),
+                a(1) - b(1), a(1) - c(1), a(1) - e(1),
+                a(2) - b(2), a(2) - c(2), a(2) - e(2);
 
             double detU = matrixU.determinant();
             double detV = matrixV.determinant();
@@ -305,8 +305,8 @@ void raytrace_shading()
 int main()
 {
     raytrace_sphere();
-    raytrace_parallelogram();
-    raytrace_perspective();
+    // raytrace_parallelogram();
+    // raytrace_perspective();
     raytrace_shading();
 
     return 0;

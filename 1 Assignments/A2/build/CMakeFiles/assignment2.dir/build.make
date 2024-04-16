@@ -44,19 +44,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.28.3/bin/cmake
+CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.28.4/bin/cmake
 
 # The command to remove a file.
-RM = /opt/homebrew/Cellar/cmake/3.28.3/bin/cmake -E rm -f
+RM = /opt/homebrew/Cellar/cmake/3.28.4/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2"
+CMAKE_SOURCE_DIR = "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/build"
+CMAKE_BINARY_DIR = "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/build"
 
 # Include any dependencies generated for this target.
 include CMakeFiles/assignment2.dir/depend.make
@@ -70,18 +70,18 @@ include CMakeFiles/assignment2.dir/progress.make
 include CMakeFiles/assignment2.dir/flags.make
 
 CMakeFiles/assignment2.dir/src/main.cpp.o: CMakeFiles/assignment2.dir/flags.make
-CMakeFiles/assignment2.dir/src/main.cpp.o: /Users/arfaz/Desktop/MyOneDrive/CSC305/1\ Assignments/A2/src/main.cpp
+CMakeFiles/assignment2.dir/src/main.cpp.o: /Users/arfaz/Desktop/ThirdYearEngineering/Spring\ 2024/0\ CSC\ 305\ A02\ B0/1\ Assignments/A2/src/main.cpp
 CMakeFiles/assignment2.dir/src/main.cpp.o: CMakeFiles/assignment2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/assignment2.dir/src/main.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/assignment2.dir/src/main.cpp.o -MF CMakeFiles/assignment2.dir/src/main.cpp.o.d -o CMakeFiles/assignment2.dir/src/main.cpp.o -c "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/src/main.cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/assignment2.dir/src/main.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/assignment2.dir/src/main.cpp.o -MF CMakeFiles/assignment2.dir/src/main.cpp.o.d -o CMakeFiles/assignment2.dir/src/main.cpp.o -c "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/src/main.cpp"
 
 CMakeFiles/assignment2.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/assignment2.dir/src/main.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/src/main.cpp" > CMakeFiles/assignment2.dir/src/main.cpp.i
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/src/main.cpp" > CMakeFiles/assignment2.dir/src/main.cpp.i
 
 CMakeFiles/assignment2.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/assignment2.dir/src/main.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/src/main.cpp" -o CMakeFiles/assignment2.dir/src/main.cpp.s
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/src/main.cpp" -o CMakeFiles/assignment2.dir/src/main.cpp.s
 
 # Object files for target assignment2
 assignment2_OBJECTS = \
@@ -93,7 +93,7 @@ assignment2_EXTERNAL_OBJECTS =
 assignment2: CMakeFiles/assignment2.dir/src/main.cpp.o
 assignment2: CMakeFiles/assignment2.dir/build.make
 assignment2: CMakeFiles/assignment2.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable assignment2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable assignment2"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/assignment2.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -105,6 +105,6 @@ CMakeFiles/assignment2.dir/clean:
 .PHONY : CMakeFiles/assignment2.dir/clean
 
 CMakeFiles/assignment2.dir/depend:
-	cd "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/build" && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2" "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2" "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/build" "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/build" "/Users/arfaz/Desktop/MyOneDrive/CSC305/1 Assignments/A2/build/CMakeFiles/assignment2.dir/DependInfo.cmake" "--color=$(COLOR)"
+	cd "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/build" && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2" "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2" "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/build" "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/build" "/Users/arfaz/Desktop/ThirdYearEngineering/Spring 2024/0 CSC 305 A02 B0/1 Assignments/A2/build/CMakeFiles/assignment2.dir/DependInfo.cmake" "--color=$(COLOR)"
 .PHONY : CMakeFiles/assignment2.dir/depend
 

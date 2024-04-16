@@ -1,0 +1,184 @@
+                Mesh Parameterization
+ Acknowledgement:  Olga Sorkine-Hornung
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Projections
+ Image Courtesy of Blender
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Surface Parameterization
+                    3D space (x,y,z)                  2D parameter domain (u,v)
+                                            U
+                                     boundary                               boundary
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                       Parameterization – Definition
+       •  Mapping P between a 2D domain Ω and  
+          the mesh S embedded in 3D (the inverse = flattening) 
+       •  Each mesh vertex has a corresponding 2D position: 
+       •  Inside each triangle, the mapping is affine (barycentric coordinates)
+                                               P
+                                              U
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+        What is a good parametrization?
+       • It depends on the application, but usually: 
+          • Bijectivity 
+          • Number of cuts and charts 
+          • Geometric distortion
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                            Bijectivity
+         • Locally bijective (1-1 and onto): No triangles fold over. 
+         • Globally bijective:  
+           locally bijective + 
+           no “distant” areas  
+           overlap
+                                                                          image from “Least Squares Conformal Maps”, Lévy et al., SIGGRAPH 2002 
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                   Bijectivity: Non-Disk Domains
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Topological Cutting
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Topological Cutting
+               A. Sheffer, J. Hart: 
+               Seamster: Inconspicuous Low-Distortion Texture Seam Layout, IEEE Vis 2002 
+               http://www.cs.ubc.ca/~sheffa/papers/VIS02.pdf
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                    Segmentation
+  D-Charts: Quasi-Developable Mesh Segmentation,  
+  D. Julius,V. Kraevoy, A. Sheffer, EUROGRAPHICS 2005 
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                               Segmentation
+                                   http://sophiehoulden.com/tutorials/blender/unwrapTut.html
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                               Segmentation
+                        By Zephyris at en.wikipedia, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=7202834
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                      Good = “fewer cuts”?
+                                                -1
+                                               f 
+                                                f
+                                     S                   D
+                        S
+                                              -1
+                                             f 
+                                              f
+                         sphere in 3D                     2D surface disk
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                 Good = “fewer cuts”?
+        but…  more cuts => less distortion
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                       A difficult balance
+                           cuts                      distortions
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                          Harmonic Mapping
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Harmonic Mapping
+       • Inner mesh edges as springs 
+       • Find minimum-energy state 
+         where all vertices lie in the 2D 
+         plane
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Harmonic Mapping
+       • Inner mesh edges as springs 
+       • Find minimum-energy state 
+         where all vertices lie in the 2D 
+         plane
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Harmonic Mapping
+       • Inner mesh edges as springs 
+       • Find minimum-energy state 
+         where all vertices lie in the 2D 
+         plane
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Harmonic Mapping
+       • Inner mesh edges as springs 
+       • Find minimum-energy state 
+         where all vertices lie in the 2D 
+         plane
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Harmonic Mapping
+       • Inner mesh edges as springs 
+       • Find minimum-energy state 
+         where all vertices lie in the 2D 
+         plane
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Harmonic Mapping
+       • Inner mesh edges as springs 
+       • Find minimum-energy state 
+         where all vertices lie in the 2D 
+         plane
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Harmonic Mapping
+       • Inner mesh edges as springs 
+       • Find minimum-energy state 
+         where all vertices lie in the 2D 
+         plane
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Harmonic Mapping
+       • Inner mesh edges as springs 
+       • Find minimum-energy state 
+         where all vertices lie in the 2D 
+         plane 
+       • Spring energy:
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            Harmonic Mapping
+       • Inner mesh edges as springs 
+       • Find minimum-energy state 
+         where all vertices lie in the 2D 
+         plane 
+       • Total spring energy of the 
+         flattened mesh:
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                           Demo
+                                https://libigl.github.io/libigl/tutorial/tutorial.html#harmonicparametrization
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                             Minimizing Spring Energy
+                                                                                – inner vertices
+                                                                                – boundary vertices
+                                    unknown                         known fixed 
+                                    flat vertex                     boundary 
+                                    positions                       positions
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                     Minimizing Spring Energy
+      • Sparse linear system of n equations to solve!
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                  Choice of spring constants k_i   
+      • Uniform 
+      • Cotangent
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                               Tutte’s Theorem
+       • If the weights are nonnegative, and the boundary is fixed to a 
+         convex polygon, the parameterization is bijective 
+       • (Tutte’63 proved for uniform weights, Floater’97 extended to arbitrary 
+         nonnegative weights) 
+       •  W.T. Tutte. “How to draw a graph”. Proceedings of the London 
+          Mathematical Society, 13(3):743-768, 1963.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                  Comparison of Weights
+                   uniform 
+                   weights
+                    cotan 
+                   weights
+   Eck et al. 1995, “Multiresolution analysis of arbitrary meshes”, SIGGRAPH 1995 
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                      Discussion
+       •  The results of cotan-weights mapping are better than those of uniform 
+          convex mapping (local area and angles preservation). 
+       •  But: the mapping is not always legal (the cotan weights can be negative 
+          for badly-shaped triangles…) 
+       •  In any case: sparse system to solve. Robust and efficient numerical solvers 
+          exist (Eigen Sparse LDLT)
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                       Discussion
+       •  Both mappings have the problem of fixed boundary –   
+          it constrains the minimization and causes distortion. 
+       •  More advanced methods do not require boundary conditions.
+       ABF++ method, 
+       Sheffer et al. 2005 
+       http://www.cs.ubc.ca/~sheffa/ABF++/abf.htm
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                     References
+        Fundamentals of Computer Graphics, Fourth Edition  
+        4th Edition by Steve Marschner, Peter Shirley 
+        Chapter 11 
+        https://open.gl 
+        Polygon Mesh Processing 
+        Mario Botsch, Leif Kobbelt, Mark Pauly, Pierre Alliez, Bruno Levy 
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider

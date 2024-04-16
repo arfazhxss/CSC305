@@ -1,0 +1,311 @@
+        Rasterization - Implementation
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+         Recap: Viewing Transformation
+            object space              camera space             screen space
+                   model      camera       projection            viewport
+                     world space                   canonical 
+                                                 view volume
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider                              Image Copyright: Andrea Tagliasacchi
+                            How to do it?
+       • Specialized hardware — Graphics Processing Unit (GPU) 
+       • APIs to interact with the hardware 
+         • OpenGL/Vulkan (Windows, Linux, Android) 
+         • DirectX (Windows) 
+         • Metal (MacOS X, iOS)
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Context Creation
+       • Before you can draw anything you need to: 
+         • Open a window (i.e. ask the OS to give you access to a portion of 
+           the screen) 
+         • Initialize the API and assign the available screen space to it 
+       • This is a technical step and it is heavily dependent on the operating 
+         system and on the hardware
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Window Manager
+       • There are many libraries that take care of this for you, hiding all the 
+         complexity and providing a cross-platform and cross-hardware 
+         interface 
+       • Some examples are GLFW and SDL 
+       • A window manager usually provides an event management system
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                  CPU and GPU memory
+          You write code here …                        … which acts here.
+                   CPU                                        GPU
+                  2-12 cores                                 1k+ cores
+                Cache (1-12Mb)       PCI express          Cache (<1kb/core)
+                 4-64 Gb RAM                           4-16 Gb STRUCTURED RAM
+            Memory Buffer with a Mesh
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                 Technical and OS-Specific
+        • Writing code for the GPU makes debugging harder, since the standard 
+          debugging tools cannot be used 
+        • The code needs to be customized for the specific operating system you are 
+          developing for 
+        • The good news is that all modern APIs, at a high-level, offer the same concepts 
+          and the same features 
+        • We will thus study a toy software rasterizer that, while slower than hardware 
+          solutions, will allow you to fully understand how rasterization works. The jump 
+          from the software rasterizer to any modern API is small and mostly technical
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                 Software Rasterization
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                          raster.h/raster.cpp
+       • The rasterizer mimics the API of modern OpenGL4/Vulkan/DirectX12 
+       • It is minimalistic, supporting only rendering of triangles and lines 
+       • It is readable, less than 200 lines of C++ code  
+       • It is expected that you understand every single line after this slideset 
+       • It allows to render the same scenes as HW solutions, it is just slower 
+       • I recommend to render small scenes in debug mode, and then switch to 
+          release for real ones
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                     Rasterization Pipeline
+            Input                                                         Output  
+      Vertex Attributes                                                RGBA Image
+     Uniform Attributes
+                                raster.h/.cpp
+            Vertex        Primitive     Rasterization    Fragment        Blending 
+           Shader         Assembly                         Shader         Shader
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                Vertex Input
+       • You have to send to the rasterizer a set of vertex attributes: 
+         • World Coordinates 
+         • Color 
+         • Normal 
+       • You can pass as many as you want, but remember that memory/
+         bandwidth is precious, you want to send only what is required by the 
+         shaders
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                    Drawing a Triangle
+      • Only the triangles in the canonical cube will be 
+        rendered. The cube will be stretched to fill all 
+        available screen space.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                         Shaders
+        • The name is historical — they were introduced to allow customization of the 
+          shading step of the traditional graphics pipeline 
+        • Shaders are general purpose functions that will be executed in parallel on the 
+          GPU (serially in our software rasterizer, making it parallel is an interesting final 
+          project) 
+        • They are usually written in a custom programming language, but in our case 
+          they will be standard C++ functions 
+        • They allow to customize the behavior of the rasterizer to achieve a variety of 
+          effects
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                   Rasterization Pipeline
+           Input                                                      Output  
+      Vertex Attributes                                            RGBA Image
+     Uniform Attributes
+           Vertex        Primitive    Rasterization   Fragment       Blending 
+           Shader        Assembly                      Shader         Shader
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                   Rasterization Pipeline
+           Input                                                      Output  
+      Vertex Attributes                                            RGBA Image
+     Uniform Attributes
+           Vertex        Primitive    Rasterization   Fragment       Blending 
+           Shader        Assembly                      Shader         Shader
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                             Vertex Shader
+       • The vertex shader is a function processing each vertex (and its 
+         attributes) as they appear in the input 
+       • Its duty is to output the final vertex position in the canonical bi-unit 
+         cube and to output any data required by the fragment shader 
+       • All transformations from world to device coordinates happen here
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                    Vertex Shader
+            object space              camera space             screen space
+                   model      camera       projection            viewport
+                     world space                   canonical 
+                                                 view volume
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                A Simple Vertex Shader
+                                               The syntax [] defines a lambda function.
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                   Rasterization Pipeline
+           Input                                                      Output  
+      Vertex Attributes                                            RGBA Image
+     Uniform Attributes
+           Vertex        Primitive    Rasterization   Fragment       Blending 
+           Shader        Assembly                      Shader         Shader
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Fragment Shader
+       • The output from the vertex shader is interpolated over all the pixels 
+         on the screen covered by a primitive  
+       • These pixels are called fragments and this is what the fragment 
+         shader operates on 
+       • It has one mandatory output, the final color of a fragment. It is up to 
+         you to write the code for computing this color from all the attributes 
+         that you attached to the vertices
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                  Vertex Shader                       Fragment Shader
+            object space              camera space             screen space
+                   model      camera       projection            viewport
+                     world space                   canonical 
+                                                 view volume
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                 A simple fragment shader
+                                                                   The colors produced by the 
+                                                                fragment shader must be between 
+                                                                          0.0 and  1.0
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                   Rasterization Pipeline
+           Input                                                      Output  
+      Vertex Attributes                                            RGBA Image
+     Uniform Attributes
+           Vertex        Primitive    Rasterization   Fragment       Blending 
+           Shader        Assembly                      Shader         Shader
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Blending Shader
+       • The blending shader decides how to blend a fragment with the 
+         colors/attributes already present on the corresponding pixel of the 
+         framebuffer
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                             We are all set!
+       • After specifying the 3 shaders (vertex, fragment, blending) we can 
+         rasterize the vertices (every 3 vertices form a triangle): 
+       • Finally, the framebuffer can be saved as a png as we did for 
+         raytracing
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                  Attributes
+       • The rasterizer uses an additional file called attributes.h to define the 
+         struct used for vertex, fragment, and framebuffer attributes 
+       • You will have to change this depending on what informations you 
+         want your shaders to have access to
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                      Vertex Attributes
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                   Fragment Attributes
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                FrameBuffer Attributes
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                  Uniforms
+       • Uniform are values that are constant for the entire scene, i.e. they are 
+         not attached to vertices 
+       • They are essentially global variables within the shaders 
+       • All vertices and all fragments will see the same value 
+       • For example, let’s change the demo code to use a uniform to store 
+         the triangle color
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                Some Tips
+       • Start from a WORKING application and do your changes 
+         incrementally. 
+       • You can add breakpoints inside raster.h/.cpp to check what is going 
+         wrong 
+       • You can also export the framebuffer to a png at any point in the code 
+         to see what is going on
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                 Software Rasterization 
+                             Examples
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                     Rasterization Pipeline
+            Input                                                         Output  
+      Vertex Attributes                                                RGBA Image
+     Uniform Attributes
+                                raster.h/.cpp
+            Vertex        Primitive     Rasterization    Fragment        Blending 
+           Shader         Assembly                         Shader         Shader
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                      Live Coding Session
+       • We will code together a few demos to showcase different features 
+         and concepts that we studied in the last lecture 
+       • No need to take notes, all the source files are available in the “extra” 
+         folder of Assignment 5
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                         Starting Code
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                     Supported Primitives
+                 Let’s take a detailed look at how these 4 functions work
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                        Line Rasterization
+       • Let us draw a red border instead of a triangle 
+       • python rename.py lines
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                          Vertex Attributes
+       • Let us add a color vertex attribute and interpolate it inside a triangle 
+       • python rename.py attributes
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+             View/Model Transformation
+       • View/Model transformations are applied in the vertex shader 
+       • They are passed to the shader as uniform (global variables) 
+       • To create transformation matrices you can do it by hand or use the 
+         geometry module of Eigen: https://eigen.tuxfamily.org/dox/
+         group__TutorialGeometry.html
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+       Viewport and View Transformation
+            object space              camera space             screen space
+                   model      camera       projection            viewport
+                                                   canonical 
+                                                 view volume
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+       Viewport and View Transformation
+            object space              camera space             screen space
+                   model      camera       projection            viewport
+                                                   canonical 
+                                                 view volume
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+       How to prevent viewport distortion?
+       • We need to adapt the view depending on the size of the framebuffer 
+       • We can then create a view transformation that maps a box with the 
+         same aspect-ratio of the viewport into the unit cube 
+       • Equivalently, we are using a “camera” that has the same aspect ratio 
+         as the window that we use for rendering 
+       • In this way, the distortion introduced by the viewport transformation 
+         will cancel out
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                     View Transformation
+       • Let’s add a view transformation to prevent viewport distortion 
+       • python rename.py view
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+         Tests (Special case of Blending)
+       • The tests determine if a fragment will affect the color in the 
+         framebuffer or if it should be discarded 
+       • There are main use cases: 
+         • Depth Test - Discards all fragments with a z coordinate bigger than 
+           the value in the depth buffer 
+         • Stencil Test - Discards all fragments outside a user-specified mask
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                Depth Test
+       • Let’s draw a couple of triangles with depth test active 
+       • python rename.py depth
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                 Blending
+       • Let’s see how to render a transparent triangle 
+       • python rename.py depth
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                               Animation
+      • Let’s see how to render a simple animation 
+      • python rename.py animation
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                          Supersampling
+      • We can render an image 4 times larger and then scale it down to 
+        avoid sharp edges 
+      • python rename.py supersampling
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                              Picking Objects
+        • To interact with the scene (for the final project), it is common to “pick” or 
+          “select” objects in the scene 
+        • The most common way to do it is to cast a ray, starting from the point where 
+          the mouse is and going “inside” the screen 
+        • The first object that is hit by the ray is going to be the selected object 
+        • For picking in the exercises, you can reuse the code that you developed in the 
+          first assignment 
+        • You must account for viewing and model transformations!
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                 Picking via Ray Casting
+    object space            camera space            screen space
+          model      camera      projection           viewport
+                                                            The easiest way to do it is to 
+                                                           create a ray in screen space, and 
+                                                             then apply all the inverse 
+                                                            transformations to move it in 
+                                                            object space, then you can 
+                                                           compute the intersection in the 
+                                        canonical                usual way.
+                                       view volume
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                            References
+      Fundamentals of Computer Graphics, Fourth Edition  
+      4th Edition by Steve Marschner, Peter Shirley 
+      Chapter 17
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider

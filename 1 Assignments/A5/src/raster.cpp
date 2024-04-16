@@ -123,11 +123,8 @@ void rasterize_line(const Program &program, const UniformAttributes &uniform, co
             if ((pixel - pixel_p).squaredNorm() < (line_thickness * line_thickness))
             {
                 VertexAttributes va = VertexAttributes::interpolate(v1, v2, v1, 1 - t, t, 0);
-                if (va.position[2] >= -1 && va.position[2] <= 1)
-                {
-                    FragmentAttributes frag = program.FragmentShader(va, uniform);
-                    frameBuffer(i, j) = program.BlendingShader(frag, frameBuffer(i, j));
-                }
+                FragmentAttributes frag = program.FragmentShader(va, uniform);
+                frameBuffer(i, j) = program.BlendingShader(frag, frameBuffer(i, j));
             }
         }
     }
@@ -158,10 +155,10 @@ void framebuffer_to_uint8(const FrameBuffer &frameBuffer, std::vector<uint8_t> &
         for (unsigned hi = 0; hi < h; ++hi)
         {
             unsigned hif = h - 1 - hi;
-            image[(hi * w * 4) + (wi * 4) + 0] = frameBuffer(wi, hif).color[0] * 255;
-            image[(hi * w * 4) + (wi * 4) + 1] = frameBuffer(wi, hif).color[1] * 255;
-            image[(hi * w * 4) + (wi * 4) + 2] = frameBuffer(wi, hif).color[2] * 255;
-            image[(hi * w * 4) + (wi * 4) + 3] = frameBuffer(wi, hif).color[3] * 255;
+            image[(hi * w * 4) + (wi * 4) + 0] = frameBuffer(wi, hif).color[0];
+            image[(hi * w * 4) + (wi * 4) + 1] = frameBuffer(wi, hif).color[1];
+            image[(hi * w * 4) + (wi * 4) + 2] = frameBuffer(wi, hif).color[2];
+            image[(hi * w * 4) + (wi * 4) + 3] = frameBuffer(wi, hif).color[3];
         }
     }
 }

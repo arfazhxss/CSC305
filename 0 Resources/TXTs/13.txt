@@ -1,0 +1,97 @@
+                      Texture Mapping
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                                                                            Sintel 
+                                                                               Blender Open Movie 
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                                                                                                                                            Sintel 
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider                                                                       Blender Open Movie 
+                             Bump Mapping
+                 Instead of encoding colors in a texture, you encode normals!
+    By Bump-map-demo-smooth.png, Orange-bumpmap.png and Bump-map-demo-bumpy.png: Original uploader was Brion VIBBER at en.wikipediaLater version(s) were uploaded by McLoaf at en.wikipedia.derivative 
+    work: GDallimore (talk) - Bump-map-demo-smooth.png, Orange-bumpmap.png and Bump-map-demo-bumpy.png, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=11747953
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                      Normal/Bump Mapping
+                 original mesh    simplified mesh   simplified mesh 
+                 4M triangles      500 triangles   and normal mapping 
+                                                     500 triangles
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                   Displacement Mapping
+                       Instead of normals, you encode a displacement.
+                               Image courtesy of: http://www.chromesphere.com/Tutorials/Vue6/Optics-Basic.html
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                             Texture Mapping
+        • The idea is the same. Instead of encoding values at vertices of triangles, you 
+          encode them in images. 
+        • You gain all the advantages of images (easy to store, compress, interpolate, sample) 
+        • You can encode any property that you want, the most common are: 
+          • Colors (Texture Mapping) 
+          • Normals (Bump Mapping) 
+          • Displacements (Displacement Mapping)
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                    What do you need?
+      • One additional per-vertex property, the UV coordinates 
+      • An image uploaded to the GPU memory (2D texture) 
+      • The UV coordinates are interpolated inside each triangle, and used to find the corresponding value 
+        in the texture 
+      • The texture value is interpolated before it is used in the shader
+                          v3                                      Image
+                                                      v3
+                         p                          p
+                               v2                          v2
+                    v1                          v1
+                    World Coordinates               UV Space
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+       Checkerboards are great to visualize a UV map
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+             “Seams” are needed for complex objects
+                                                                           Image from Vallet and Levy, techreport INRIA
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+           How are UV maps encoded?
+      • 2 versions of the mesh are stored, one for the triangles in 3D and one for those in 2D 
+      • The faces of the 2 meshes are in one-to-one correspondence 
+      • OpenGL does not support this you need to duplicate all the vertices on the seams and pass one 
+       single mesh. An easy (and inefficient) way to do this is by duplicating all vertices and not using an 
+       element buffer.
+                             Vertices       UV 
+                                           Vertices
+                             Faces         UV Faces
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                       A minimal example
+                  v4
+                             v                        v5
+                              3
+                                                          v4   v
+                                                                3
+                                  v2                                v
+                                                v6                   2
+                      v1                                v1
+                      World Coordinates                  UV Space
+                        Faces                            UV Faces
+                    v1 v2 v3                           v1 v2 v3
+                    v1 v3 v4                           v4 v5 v6
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                           Texture Filtering
+                         Nearest Point            Bilinear Interpolation
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                     Bilinear Interpolation
+          D             F      C                   E = (1-u) A + u B
+                                                   F = (1-u) D + u C
+                          G                        G = (1-v) E + u F
+         v 
+          A             E      B
+                      u 
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                Moire Pattern
+                                      http://photo.net/digital-darkroom-forum/00W8gC
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                          Mipmapping
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
+                                Mipmapping
+      • Moire pattern can appear if 
+        the resolution of the texture 
+        is much higher than the 
+        sampling rate 
+      • A good solution for this 
+        problem is mipmapping
+    By en:User:Mulad, based on a NASA image - Created by en:User:Mulad based on File:ISS from Atlantis - Sts101-714-016.jpg, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=1140741
+ CSC 305 - Introduction to Computer Graphics - Teseo Schneider
